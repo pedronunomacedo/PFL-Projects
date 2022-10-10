@@ -36,3 +36,6 @@ searchForPower [] = False
 searchForPower (x:xs)
   | (x == '^') = True
   | otherwise = searchForPower xs
+
+
+-- [(Char,Int),(Char,Int)]
