@@ -1,26 +1,50 @@
 import Data.Char
 
+
+------------------ Types, data and variables -------------------------
+
 data Expo = Expo { var :: Char, exponent :: Integer } deriving (Show)
 data Term = Term { number :: Float, expos :: [Expo] } deriving (Show)
 
-testExpo :: Char -> Integer -> Expo
-testExpo var exponent = Expo var exponent
-
-testTerm :: Float -> [Expo] -> Term
-testTerm number l = Term number l
 
 
---------------- Divide the given array in string parts ---------------
+
+
+------------------------- mainFunction -----------------------------
+
 mainFunction :: [Char] -> [[Char]]
 mainFunction l
   | (head newl == '+' || head newl == '-') = splitArray newl
   | otherwise = splitArray ('+':newl)
   where newl = (filter (\x -> (x /=' ')) l)
 
+
+
+main1 :: [[Char]] -> [Term]
+main1 [] = []
+main1 (x:xs) = [inTerm x]++(main1 xs)
+
+
 {-
 mainFunction "0*x^2 + 2*y + 5*z + y + 7*y^2"
 ["+0*x^2","+2*y","+5*z","+y","+7*y^2","+2"]
 -}
+
+
+{-
+main1 ["-0*x^2","5*z","-7*y^4"]
+[Term {number = -0.0, expos = [Expo {var = 'x', exponent = 2}]},Term {number = 5.0, expos = [Expo {var = 'z', exponent = 1}]},Term {number = -7.0, expos = [Expo {var = 'y', exponent = 4}]}]
+-}
+
+
+-- ERROS:
+          -- inTerm "x"   --> se for so uma variavel assim sem nada da erro
+          -- main1 ["-0*x^2","+5*z","-7*y^4"]  --> se tiver um "mais" (+) antes dos numeros dá mal, se nao houver ou for um "menos" (-) dá certo
+
+
+
+
+--------------- Divide the given array in string parts ---------------
 
 splitArray :: [Char] -> [[Char]]
 splitArray [] = [[]]
@@ -43,13 +67,28 @@ makeArray (x:xs) num
   | ((((head xs) /= '+') || ((head xs) /= '-')) && num == 0) = makeArray xs 0
   | otherwise = [x] ++ (makeArray xs 1)
 
+
+
+
+
+  ----------------- Transform strings into TERM ---------------------
+
+myconcat :: [[a]] -> [a]
+myconcat [] = []
+myconcat (x:xs) = x ++ myconcat xs
+
+
 takeExpoNum :: [Char] -> [Char]
 takeExpoNum [x] = [x]
 takeExpoNum (x:xs) = x:(takeExpoNum xs)
 
---"4*x^2*y^2" [Expo = {var: x, expoente: 2}, Expo = {var: y, expoente: 2}]
+
+--"4*x^2*y^3*z^4" [Expo = {var: x, expoente: 2}, Expo = {var: y, expoente: 2}]
 makeExpos :: [Char] -> [Expo]
-makeExpos l = [inExpo ( takeWhile (/='*') (tail (dropWhile (/= '*') l)) )]++[inExpo ( dropWhile (/='*') (tail(dropWhile (/= '*') l)) )]
+makeExpos [] = []
+makeExpos l = [inExpo (takeWhile (/='*') (tail (dropWhile (/= '*') l)) )]++
+              myconcat[makeExpos ( dropWhile (/='*') (tail(dropWhile (/= '*') l)) )]
+
 
 inExpo :: [Char] -> Expo
 inExpo [] = Expo ' ' 0
@@ -64,12 +103,17 @@ takeNum x = takeWhile (/='*') x
 
 inTerm :: [Char] -> Term
 inTerm [] = Term 0 []
-inTerm [x] = Term (read [x] :: Float) []
-inTerm x = Term (read (takeNum x) :: Float) []
+inTerm [x]
+  | (isAlpha x) = Term 1 (makeExpos [x])
+  | otherwise = Term (read [x] :: Float) []
+inTerm x = Term (read (takeNum x) :: Float) (makeExpos x)
 
 
 
---------------- Transform the list of strings in [(num, letter, grau),...] ---------------
+
+
+---------- Transform the list of strings in [(num, letter, grau),...] --------
+
 searchForTimes :: [Char] -> Bool
 searchForTimes str = if (length (filter (=='*') str) /= 0) then True else False
 
