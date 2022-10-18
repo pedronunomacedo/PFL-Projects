@@ -20,6 +20,31 @@ mainFunction l
 
 
 
+main = do
+  putStrLn "\n"
+  putStrLn " Escolha uma opção: "
+  putStrLn "\n"
+  putStrLn " [1] - normalizar polinómio"
+  putStrLn " [2] - adicionar polinómios"
+  putStrLn " [3] - multiplicar polinómios"
+  putStrLn " [4] - derivada de polinómio"
+  putStrLn "\n"
+
+  opção <- getLine
+
+  putStrLn "\n"
+
+  do
+    if (opção == "1")
+      then putStrLn ("escolheu a opcao " ++ opção ++ "\n")
+      else if (opção == "2")
+        then putStrLn ("escolheu a opcao " ++ opção ++ "\n")
+        else if (opção == "3")
+          then putStrLn ("escolheu a opcao " ++ opção ++ "\n")
+          else if (opção == "4")
+            then putStrLn ("escolheu a opcao " ++ opção ++ "\n")
+            else error "Escolha um número entre 1 e 4"
+
 
 {-
 mainFunction "0*x^2 + 2*y + 5*z + y + 7*y^2"
@@ -31,12 +56,6 @@ mainFunction "0*x^2 + 2*y + 5*z + y + 7*y^2"
 allInTerm ["-0*x^2","5*z","-7*y^4"]
 [Term {number = -0.0, expos = [Expo {var = 'x', exponent = 2}]},Term {number = 5.0, expos = [Expo {var = 'z', exponent = 1}]},Term {number = -7.0, expos = [Expo {var = 'y', exponent = 4}]}]
 -}
-
-
--- ERROS:
-          -- inTerm "x"   --> se for so uma variavel assim sem nada da erro
-          -- allInTerm ["-0*x^2","+5*z","-7*y^4"]  --> se tiver um "mais" (+) antes dos numeros dá mal, se nao houver ou for um "menos" (-) dá certo
-
 
 
 
@@ -97,9 +116,11 @@ inExpo (x:y)
   | (isAlpha x) = if (head y == '^') then Expo x (read (takeExpoNum (tail y))::Integer) else Expo x 1
   | otherwise = inExpo y
 
+
 takeNum :: [Char] -> [Char]
 takeNum [x] = [x]
 takeNum x = takeWhile (/='*') x
+
 
 inTerm :: [Char] -> Term
 inTerm [] = Term 0 []
@@ -112,12 +133,15 @@ inTerm (x:xs)
   | (x == '-') = Term (-1) (makeExpos xs)
   | otherwise = Term (read [x] :: Float) []
 
+
 allInTerm :: [[Char]] -> [Term]
 allInTerm [] = []
 allInTerm (x:xs) = [inTerm x]++(allInTerm xs)
 
 
 
+
+{-
 
 ---------- Transform the list of strings in [(num, letter, grau),...] --------
 
@@ -134,3 +158,4 @@ readAfterTimes (x:xs) b
   | (x == '*') = readAfterTimes xs 1
   | (x /= '*' && b == 1) = (readAfterTimes xs 1) * 10 + (digitToInt x)
   | otherwise = readAfterTimes xs 0
+-}
