@@ -20,10 +20,6 @@ mainFunction l
 
 
 
-main1 :: [[Char]] -> [Term]
-main1 [] = []
-main1 (x:xs) = [inTerm x]++(main1 xs)
-
 
 {-
 mainFunction "0*x^2 + 2*y + 5*z + y + 7*y^2"
@@ -32,14 +28,14 @@ mainFunction "0*x^2 + 2*y + 5*z + y + 7*y^2"
 
 
 {-
-main1 ["-0*x^2","5*z","-7*y^4"]
+allInTerm ["-0*x^2","5*z","-7*y^4"]
 [Term {number = -0.0, expos = [Expo {var = 'x', exponent = 2}]},Term {number = 5.0, expos = [Expo {var = 'z', exponent = 1}]},Term {number = -7.0, expos = [Expo {var = 'y', exponent = 4}]}]
 -}
 
 
 -- ERROS:
           -- inTerm "x"   --> se for so uma variavel assim sem nada da erro
-          -- main1 ["-0*x^2","+5*z","-7*y^4"]  --> se tiver um "mais" (+) antes dos numeros dá mal, se nao houver ou for um "menos" (-) dá certo
+          -- allInTerm ["-0*x^2","+5*z","-7*y^4"]  --> se tiver um "mais" (+) antes dos numeros dá mal, se nao houver ou for um "menos" (-) dá certo
 
 
 
@@ -86,8 +82,12 @@ takeExpoNum (x:xs) = x:(takeExpoNum xs)
 --"4*x^2*y^3*z^4" [Expo = {var: x, expoente: 2}, Expo = {var: y, expoente: 2}]
 makeExpos :: [Char] -> [Expo]
 makeExpos [] = []
-makeExpos l = [inExpo (takeWhile (/='*') (tail (dropWhile (/= '*') l)) )]++
-              myconcat[makeExpos ( dropWhile (/='*') (tail(dropWhile (/= '*') l)) )]
+makeExpos [x] = [Expo x 1]
+makeExpos (x:xs)
+  | ((isAlpha x) && length (dropWhile (/='*') (x:xs)) == 0) = [inExpo (takeWhile (/='*') (x:xs)) ]
+  | (length (tail (dropWhile (/='*') (x:xs))) == 0) = []
+  | otherwise = [inExpo (takeWhile (/='*') (x:xs)) ]++
+                myconcat[makeExpos ( tail(dropWhile (/='*') (x:xs)))]
 
 
 inExpo :: [Char] -> Expo
@@ -103,11 +103,18 @@ takeNum x = takeWhile (/='*') x
 
 inTerm :: [Char] -> Term
 inTerm [] = Term 0 []
-inTerm [x]
-  | (isAlpha x) = Term 1 (makeExpos [x])
+inTerm (x:xs)
+  | ((x == '+') && not('*' `elem` xs) && isDigit(head xs)) = Term (read(xs)::Float) [Expo ' ' 0]
+  | ((x == '-') && not('*' `elem` xs) && isDigit(head xs)) = Term (read(x:xs)::Float) [Expo ' ' 0]
+  | (x == '+' && isDigit(head xs)) = Term (read(takeNum xs)::Float) (makeExpos (tail(dropWhile (/='*') xs)))
+  | (x == '-' && isDigit(head xs)) = Term (read(takeNum (x:xs))::Float) (makeExpos (tail(dropWhile (/='*') xs)))
+  | (x == '+') = Term 1 (makeExpos xs)
+  | (x == '-') = Term (-1) (makeExpos xs)
   | otherwise = Term (read [x] :: Float) []
-inTerm x = Term (read (takeNum x) :: Float) (makeExpos x)
 
+allInTerm :: [[Char]] -> [Term]
+allInTerm [] = []
+allInTerm (x:xs) = [inTerm x]++(allInTerm xs)
 
 
 
