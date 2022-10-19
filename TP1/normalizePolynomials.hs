@@ -3,7 +3,7 @@ import Data.Char
 
 ------------------ Types, data and variables -------------------------
 
-data Expo = Expo { var :: Char, exponent :: Integer } deriving (Show)
+data Expo = Expo { var :: Char, exponant :: Integer } deriving (Show)
 data Term = Term { number :: Float, expos :: [Expo] } deriving (Show)
 
 
@@ -19,24 +19,31 @@ mainFunction l
   where newl = (filter (\x -> (x /=' ')) l)
 
 
+mainFunction1 :: [Char] -> [Term]
+mainFunction1 l = option1 (allInTerm (mainFunction l))
+
 
 main = do
-  putStrLn "\n"
+  putStrLn ""
   putStrLn " Escolha uma opção: "
-  putStrLn "\n"
+  putStrLn ""
   putStrLn " [1] - normalizar polinómio"
   putStrLn " [2] - adicionar polinómios"
   putStrLn " [3] - multiplicar polinómios"
   putStrLn " [4] - derivada de polinómio"
-  putStrLn "\n"
+  putStrLn ""
 
   opção <- getLine
 
-  putStrLn "\n"
+  putStrLn ""
 
   do
     if (opção == "1")
-      then putStrLn ("escolheu a opcao " ++ opção ++ "\n")
+      then do
+            putStrLn ("Escreva o polinómio: ")
+            polinomio <- getLine
+            putStrLn ""
+            print $ mainFunction1 polinomio
       else if (opção == "2")
         then putStrLn ("escolheu a opcao " ++ opção ++ "\n")
         else if (opção == "3")
@@ -53,10 +60,38 @@ mainFunction "0*x^2 + 2*y + 5*z + y + 7*y^2"
 
 
 {-
-allInTerm ["-0*x^2","5*z","-7*y^4"]
-[Term {number = -0.0, expos = [Expo {var = 'x', exponent = 2}]},Term {number = 5.0, expos = [Expo {var = 'z', exponent = 1}]},Term {number = -7.0, expos = [Expo {var = 'y', exponent = 4}]}]
+allInTerm ["+3*x^2","+2*y","+5*z","+y","+7*y^2"]
+[Term {number = 3.0, expos = [Expo {var = 'x', exponant = 2}]},Term {number = 2.0, expos = [Expo {var = 'y', exponant = 1}]},Term {number = 5.0, expos = [Expo {var = 'z', exponant = 1}]},Term {number = 1.0, expos = [Expo {var = 'y', exponant = 1}]},Term {number = 7.0, expos = [Expo {var = 'y', exponant = 2}]}]
 -}
 
+
+
+
+
+-------------------------------- Opções ------------------------------
+
+option1 :: [Term] -> [Term]
+option1 [] = []
+option1 l = removeZeros l
+
+removeZeros :: [Term] -> [Term]
+removeZeros [] = []
+removeZeros l = removeZeroExponants (removeZeroNumbersTerms l)
+
+removeZeroExponants :: [Term] -> [Term]
+removeZeroExponants [] = []
+removeZeroExponants [x] = [Term (number x) (map (\y -> if (exponant y == 0) then (Expo ' ' 0) else y) (expos x))]
+removeZeroExponants (x:xs) = (Term (number x) (filter (\x -> (exponant x /= 0)) (expos x))):(removeZeroExponants xs)
+
+removeZeroNumbersTerms :: [Term] -> [Term]
+removeZeroNumbersTerms [] = []
+removeZeroNumbersTerms l = filter (\exp -> (number exp /= 0.0)) l
+
+{-
+sumNumOfSameExponent :: [Term] -> [Term]
+sumNumOfSameExponent [] = []
+sumNumOfSameExponent l
+-}
 
 
 --------------- Divide the given array in string parts ---------------
@@ -138,6 +173,14 @@ allInTerm :: [[Char]] -> [Term]
 allInTerm [] = []
 allInTerm (x:xs) = [inTerm x]++(allInTerm xs)
 
+
+orderExpos :: [Expo] -> [Expo]
+orderExpos [] = []
+orderExpos [x] = [x]
+orderExpos (x:xs)
+  | (ord(var x) < ord(var (head xs))) = [x]++(orderExpos xs)
+  | (ord(var x) == ord(var (head xs))) = if ((exponant x) < (exponant (head xs))) then [x]++(orderExpos xs) else (orderExpos xs)++[x]
+  | otherwise = (orderExpos xs)++[x]
 
 
 
