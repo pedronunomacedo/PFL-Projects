@@ -21,7 +21,7 @@ mainFunction l
 
 
 mainFunction1 :: [Char] -> [Term]
-mainFunction1 l = option1 (allInTerm (mainFunction l))
+mainFunction1 l = sameVarSumExponentsForAllTerms (removeAllZeros (sortFunctionForAllTerms(allInTerm (mainFunction l))))
 
 
 main = do
@@ -55,7 +55,7 @@ main = do
 
 
 {-
-mainFunction "0*x^2 + 2*y + 5*z + y + 7*y^2"
+mainFunction "0*x^2 + 2*y*y^2 + 5*z + y + 7*y^2 + 8*y^2*x^3*y^6*x^7*a^9"
 ["+0*x^2","+2*y","+5*z","+y","+7*y^2","+2"]
 -}
 
@@ -69,11 +69,17 @@ allInTerm ["+3*x^2","+2*y","+5*z","+y","+7*y^2"]
 
 
 
+
+
+
+
+
+
 -------------------------------- Opção 1 ------------------------------
 
-option1 :: [Term] -> [Term]
-option1 [] = []
-option1 l = removeZeros l
+removeAllZeros :: [Term] -> [Term]
+removeAllZeros [] = []
+removeAllZeros l = removeZeros l
 
 removeZeros :: [Term] -> [Term]
 removeZeros [] = []
@@ -88,11 +94,32 @@ removeZeroNumbersTerms :: [Term] -> [Term]
 removeZeroNumbersTerms [] = []
 removeZeroNumbersTerms l = filter (\exp -> (number exp /= 0.0)) l
 
-{-}
-addTermsWithSameExponent :: [Term] -> [Term]
-addTermsWithSameExponent [] = []
-addTermsWithSameExponent l = (addTermsWithSameExponent (removeTermsWithSameExpos l (expos ti)))
-  where ti = head l
+
+
+sumExpos :: [Expo] -> Integer
+sumExpos [] = 0
+sumExpos [x] = exponant x
+sumExpos (x:xs) = (exponant x) + sumExpos xs
+
+sameVarSumExponents :: [Expo] -> [Expo]
+sameVarSumExponents [] = []
+sameVarSumExponents l = [Expo (var (head l)) (sumExpos (filter (\x -> (var (head l)) == (var x)) l))]++(sameVarSumExponents (filter (\x -> (var (head l)) /= (var x)) l))
+
+sameVarSumExponentsForTerm :: Term -> Term
+sameVarSumExponentsForTerm t = Term (number t) (sameVarSumExponents (expos t))
+
+sameVarSumExponentsForAllTerms :: [Term] -> [Term]
+sameVarSumExponentsForAllTerms [] = []
+sameVarSumExponentsForAllTerms (x:xs) = (sameVarSumExponentsForTerm x):(sameVarSumExponentsForAllTerms xs)
+
+
+
+
+{-
+addTermsWithSameExponents :: [Term] -> [Term]
+addTermsWithSameExponents [] = []
+addTermsWithSameExponents l = (foldr (sumNumOfSameExponent) ti:(filter (\x -> (expos x) == (expos ti)) (tail l))):(addTermsWithSameExponents (tail l))
+  where ti = (head l)
 
 removeTermsWithSameExpos :: [Term] -> Expo -> [Term]
 removeTermsWithSameExpos [] _ = []
@@ -102,17 +129,22 @@ sumNumOfSameExponent :: Term -> Term -> Float
 sumNumOfSameExponent a b = (number a) + (number b)
 -}
 
-sameVarSumExponents :: [Expo] -> [Expo]
-sameVarSumExponents [] = []
-sameVarSumExponents (x:xs)
-  | (var x == var (head xs)) = (x:xs)++[Expo (var x) ((exponant x) + (exponant (head xs)))]
-  | otherwise = sameVarSumExponents xs
 
 
 
 
 
------------------ Sort expos of one term ---------------------
+
+
+
+
+
+
+
+
+
+
+----------------- Sort expos of all terms ---------------------
 
 sortExpos :: Expo -> Expo -> Ordering
 sortExpos exp1 exp2
@@ -137,6 +169,28 @@ sortB lista = sortBy (sortLetters) (highestTerm : [x | x <- (tail lista), (expon
 sortFunction :: [Expo] -> [Expo]
 sortFunction [] = []
 sortFunction lista = sortB (sortByEx lista)
+
+sortFunctionForTerm :: Term -> Term
+sortFunctionForTerm t = Term (number t) (sortFunction (expos t))
+
+sortFunctionForAllTerms :: [Term] -> [Term]
+sortFunctionForAllTerms [] = []
+sortFunctionForAllTerms (x:xs) = (sortFunctionForTerm x):(sortFunctionForAllTerms xs)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -164,6 +218,14 @@ makeArray (x:xs) num
   | ((((head xs) == '+') || ((head xs) == '-')) && num == 0) = makeArray xs 1
   | ((((head xs) /= '+') || ((head xs) /= '-')) && num == 0) = makeArray xs 0
   | otherwise = [x] ++ (makeArray xs 1)
+
+
+
+
+
+
+
+
 
 
 
