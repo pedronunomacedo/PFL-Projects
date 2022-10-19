@@ -1,10 +1,11 @@
 import Data.Char
+import Data.List
 
 
 ------------------ Types, data and variables -------------------------
 
-data Expo = Expo { var :: Char, exponant :: Integer } deriving (Show)
-data Term = Term { number :: Float, expos :: [Expo] } deriving (Show)
+data Expo = Expo { var :: Char, exponant :: Integer } deriving (Show, Eq)
+data Term = Term { number :: Float, expos :: [Expo] } deriving (Show, Eq)
 
 
 
@@ -68,7 +69,7 @@ allInTerm ["+3*x^2","+2*y","+5*z","+y","+7*y^2"]
 
 
 
--------------------------------- Opções ------------------------------
+-------------------------------- Opção 1 ------------------------------
 
 option1 :: [Term] -> [Term]
 option1 [] = []
@@ -87,11 +88,58 @@ removeZeroNumbersTerms :: [Term] -> [Term]
 removeZeroNumbersTerms [] = []
 removeZeroNumbersTerms l = filter (\exp -> (number exp /= 0.0)) l
 
-{-
-sumNumOfSameExponent :: [Term] -> [Term]
-sumNumOfSameExponent [] = []
-sumNumOfSameExponent l
+{-}
+addTermsWithSameExponent :: [Term] -> [Term]
+addTermsWithSameExponent [] = []
+addTermsWithSameExponent l = (addTermsWithSameExponent (removeTermsWithSameExpos l (expos ti)))
+  where ti = head l
+
+removeTermsWithSameExpos :: [Term] -> Expo -> [Term]
+removeTermsWithSameExpos [] _ = []
+removeTermsWithSameExpos terms exps = filter (\t -> ((expos t) /= exps)) terms
+
+sumNumOfSameExponent :: Term -> Term -> Float
+sumNumOfSameExponent a b = (number a) + (number b)
 -}
+
+sameVarSumExponents :: [Expo] -> [Expo]
+sameVarSumExponents [] = []
+sameVarSumExponents (x:xs)
+  | (var x == var (head xs)) = (x:xs)++[Expo (var x) ((exponant x) + (exponant (head xs)))]
+  | otherwise = sameVarSumExponents xs
+
+
+
+
+
+----------------- Sort expos of one term ---------------------
+
+sortExpos :: Expo -> Expo -> Ordering
+sortExpos exp1 exp2
+  | (exponant exp1 < exponant exp2) = GT
+  | otherwise = LT
+
+sortByEx :: [Expo] -> [Expo] -- Expo {var, exponant}
+sortByEx [] = []
+sortByEx l = sortBy (sortExpos) l
+
+sortLetters :: Expo -> Expo -> Ordering
+sortLetters letter1 letter2
+  | (var (letter1) < var (letter2)) = LT
+  | otherwise = GT
+
+sortB :: [Expo] -> [Expo]
+sortB [] = []
+sortB lista = sortBy (sortLetters) (highestTerm : [x | x <- (tail lista), (exponant x) == (exponant highestTerm)])
+              ++ sortB [x | x <- lista, (exponant x) /= (exponant highestTerm)]
+              where highestTerm = (head lista)
+
+sortFunction :: [Expo] -> [Expo]
+sortFunction [] = []
+sortFunction lista = sortB (sortByEx lista)
+
+
+
 
 
 --------------- Divide the given array in string parts ---------------
@@ -179,26 +227,4 @@ orderExpos [] = []
 orderExpos [x] = [x]
 orderExpos (x:xs)
   | (ord(var x) < ord(var (head xs))) = [x]++(orderExpos xs)
-  | (ord(var x) == ord(var (head xs))) = if ((exponant x) < (exponant (head xs))) then [x]++(orderExpos xs) else (orderExpos xs)++[x]
   | otherwise = (orderExpos xs)++[x]
-
-
-
-{-
-
----------- Transform the list of strings in [(num, letter, grau),...] --------
-
-searchForTimes :: [Char] -> Bool
-searchForTimes str = if (length (filter (=='*') str) /= 0) then True else False
-
-searchForPower :: [Char] -> Bool
-searchForPower str = if (length (filter (=='^') str) /= 0) then True else False
-
-readAfterTimes :: [Char] -> Int -> Int
-readAfterTimes [] _ = 0
-readAfterTimes [x] _ = digitToInt x
-readAfterTimes (x:xs) b
-  | (x == '*') = readAfterTimes xs 1
-  | (x /= '*' && b == 1) = (readAfterTimes xs 1) * 10 + (digitToInt x)
-  | otherwise = readAfterTimes xs 0
--}
