@@ -68,14 +68,19 @@ main = do
 option1 :: [Char] -> [Term]
 option1 l = sortAllListByExpos (addTermsWithSameExponents (sortAllListByExpos (sameVarSumExponentsForAllTerms (removeZeroNumbersTerms (sortFunctionForAllTerms(allInTerm (divideString l)))))))
 
+--esta nao está mal mas chama a outra de baixo que está mal
+{-
 removeZeros :: [Term] -> [Term]
 removeZeros [] = []
 removeZeros l = removeZeroExponants (removeZeroNumbersTerms l)
-
+-}
+-- esta é que está mal. Tem que retornar     Expo [var = ' ', exponant = 0]   e não  Expo []
+{-
 removeZeroExponants :: [Term] -> [Term]
 removeZeroExponants [] = []
 removeZeroExponants [x] = [Term (number x) (map (\y -> if (exponant y == 0) then (Expo ' ' 0) else y) (expos x))]
 removeZeroExponants (x:xs) = (Term (number x) (filter (\x -> (exponant x /= 0)) (expos x))):(removeZeroExponants xs)
+-}
 
 removeZeroNumbersTerms :: [Term] -> [Term]
 removeZeroNumbersTerms [] = []
@@ -142,9 +147,10 @@ option2 a b
 
 
   -------------------------------- Opção 3 ------------------------------
-
-
-
+{-
+option3 :: [Char] -> [Char] -> [Term]
+option3 a b
+-}
 
 
 
@@ -255,7 +261,6 @@ takeExpoNum [x] = [x]
 takeExpoNum (x:xs) = x:(takeExpoNum xs)
 
 
---"4*x^2*y^3*z^4" [Expo = {var: x, expoente: 2}, Expo = {var: y, expoente: 2}]
 makeExpos :: [Char] -> [Expo]
 makeExpos [] = []
 makeExpos [x] = [Expo x 1]
