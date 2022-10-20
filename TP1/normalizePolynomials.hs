@@ -66,11 +66,7 @@ main = do
 -------------------------------- Opção 1 ------------------------------
 
 option1 :: [Char] -> [Term]
-option1 l = addTermsWithSameExponents (sortAllListByExpos (sameVarSumExponentsForAllTerms (removeAllZeros (sortFunctionForAllTerms(allInTerm (divideString l))))))
-
-removeAllZeros :: [Term] -> [Term]
-removeAllZeros [] = []
-removeAllZeros l = removeZeros l
+option1 l = sortAllListByExpos (addTermsWithSameExponents (sortAllListByExpos (sameVarSumExponentsForAllTerms (removeZeroNumbersTerms (sortFunctionForAllTerms(allInTerm (divideString l)))))))
 
 removeZeros :: [Term] -> [Term]
 removeZeros [] = []
@@ -113,7 +109,7 @@ addTermsWithSameExponents (x:xs) = if ((expos x) == (expos (head xs))) then addT
 myinsert :: Term -> [Term] -> [Term]
 myinsert n [] = [n]
 myinsert n (x:xs)
-  | (ord (var (head (expos n)))) < (ord (var (head (expos x)))) = n:x:xs
+  | ((ord (var (head (expos n)))) < (ord (var (head (expos x))))) = n:x:xs
   | (ord (var (head (expos n)))) == (ord (var (head (expos x)))) = if ((exponant (head (expos n))) >= (exponant (head (expos x)))) then (n:x:xs) else x:(myinsert n xs)
   | otherwise = x:(myinsert n xs)
 
@@ -154,7 +150,7 @@ option2 a b
 
 
 
------------------ Sort expos of all terms -----------------------
+------------------------- Sort expos of all terms -----------------------
 
 sortExpos :: Expo -> Expo -> Ordering
 sortExpos exp1 exp2
