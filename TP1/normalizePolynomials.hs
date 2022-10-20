@@ -13,17 +13,6 @@ data Term = Term { number :: Float, expos :: [Expo] } deriving (Show, Eq)
 
 ------------------------- mainFunction -----------------------------
 
-mainFunction :: [Char] -> [[Char]]
-mainFunction l
-  | (head newl == '+' || head newl == '-') = splitArray newl
-  | otherwise = splitArray ('+':newl)
-  where newl = (filter (\x -> (x /=' ')) l)
-
-
-mainFunction1 :: [Char] -> [Term]
-mainFunction1 l = sameVarSumExponentsForAllTerms (removeAllZeros (sortFunctionForAllTerms(allInTerm (mainFunction l))))
-
-
 main = do
   putStrLn ""
   putStrLn " Escolha uma opção: "
@@ -41,12 +30,21 @@ main = do
   do
     if (opção == "1")
       then do
-            putStrLn ("Escreva o polinómio: ")
-            polinomio <- getLine
-            putStrLn ""
-            print $ mainFunction1 polinomio
+        putStrLn ("Escreva o polinómio: ")
+        polinomio <- getLine
+        putStrLn ""
+        putStrLn ("Polinómio normalizado: ")
+        print $ option1 polinomio
       else if (opção == "2")
-        then putStrLn ("escolheu a opcao " ++ opção ++ "\n")
+        then do
+          putStrLn ("Escreva o primeiro polinómio")
+          polinomio1 <- getLine
+          putStrLn ""
+          putStrLn ("Escreva o segundo polinómio")
+          polinomio2 <- getLine
+          putStrLn ""
+          putStrLn ("Resultado: ")
+          print $ option2 polinomio1 polinomio2
         else if (opção == "3")
           then putStrLn ("escolheu a opcao " ++ opção ++ "\n")
           else if (opção == "4")
@@ -54,16 +52,6 @@ main = do
             else error "Escolha um número entre 1 e 4"
 
 
-{-
-mainFunction "0*x^2 + 2*y*y^2 + 5*z + y + 7*y^2 + 8*y^2*x^3*y^6*x^7*a^9"
-["+0*x^2","+2*y","+5*z","+y","+7*y^2","+2"]
--}
-
-
-{-
-allInTerm ["+3*x^2","+2*y","+5*z","+y","+7*y^2"]
-[Term {number = 3.0, expos = [Expo {var = 'x', exponant = 2}]},Term {number = 2.0, expos = [Expo {var = 'y', exponant = 1}]},Term {number = 5.0, expos = [Expo {var = 'z', exponant = 1}]},Term {number = 1.0, expos = [Expo {var = 'y', exponant = 1}]},Term {number = 7.0, expos = [Expo {var = 'y', exponant = 2}]}]
--}
 
 
 
@@ -76,6 +64,9 @@ allInTerm ["+3*x^2","+2*y","+5*z","+y","+7*y^2"]
 
 
 -------------------------------- Opção 1 ------------------------------
+
+option1 :: [Char] -> [Term]
+option1 l = addTermsWithSameExponents (sortAllListByExpos (sameVarSumExponentsForAllTerms (removeAllZeros (sortFunctionForAllTerms(allInTerm (divideString l))))))
 
 removeAllZeros :: [Term] -> [Term]
 removeAllZeros [] = []
@@ -94,8 +85,6 @@ removeZeroNumbersTerms :: [Term] -> [Term]
 removeZeroNumbersTerms [] = []
 removeZeroNumbersTerms l = filter (\exp -> (number exp /= 0.0)) l
 
-
-
 sumExpos :: [Expo] -> Integer
 sumExpos [] = 0
 sumExpos [x] = exponant x
@@ -112,28 +101,25 @@ sameVarSumExponentsForAllTerms :: [Term] -> [Term]
 sameVarSumExponentsForAllTerms [] = []
 sameVarSumExponentsForAllTerms (x:xs) = (sameVarSumExponentsForTerm x):(sameVarSumExponentsForAllTerms xs)
 
+sumTermOfSameExponent :: Term -> Term -> Term
+sumTermOfSameExponent a b = Term ((number a) + (number b)) (expos a)
 
-
-
-{-
 addTermsWithSameExponents :: [Term] -> [Term]
 addTermsWithSameExponents [] = []
-addTermsWithSameExponents l = (foldr (sumNumOfSameExponent) ti:(filter (\x -> (expos x) == (expos ti)) (tail l))):(addTermsWithSameExponents (tail l))
-  where ti = (head l)
-
-removeTermsWithSameExpos :: [Term] -> Expo -> [Term]
-removeTermsWithSameExpos [] _ = []
-removeTermsWithSameExpos terms exps = filter (\t -> ((expos t) /= exps)) terms
-
-sumNumOfSameExponent :: Term -> Term -> Float
-sumNumOfSameExponent a b = (number a) + (number b)
--}
+addTermsWithSameExponents [x] = [x]
+addTermsWithSameExponents (x:xs) = if ((expos x) == (expos (head xs))) then addTermsWithSameExponents((sumTermOfSameExponent x (head xs)) : (tail xs)) else [x]++(addTermsWithSameExponents xs)
 
 
+myinsert :: Term -> [Term] -> [Term]
+myinsert n [] = [n]
+myinsert n (x:xs)
+  | (ord (var (head (expos n)))) < (ord (var (head (expos x)))) = n:x:xs
+  | (ord (var (head (expos n)))) == (ord (var (head (expos x)))) = if ((exponant (head (expos n))) >= (exponant (head (expos x)))) then (n:x:xs) else x:(myinsert n xs)
+  | otherwise = x:(myinsert n xs)
 
-
-
-
+sortAllListByExpos :: [Term] -> [Term]
+sortAllListByExpos [] = []
+sortAllListByExpos (x:xs) = myinsert x (sortAllListByExpos xs)
 
 
 
@@ -141,10 +127,34 @@ sumNumOfSameExponent a b = (number a) + (number b)
 
 
 
+-------------------------------- Opção 2 ------------------------------
+
+option2 :: [Char] -> [Char] -> [Term]
+option2 a b
+  | (head b == '-') = option1 (a ++ b)
+  | otherwise = option1 (a ++ "+" ++ b)
 
 
 
------------------ Sort expos of all terms ---------------------
+
+
+
+
+
+
+
+
+
+  -------------------------------- Opção 3 ------------------------------
+
+
+
+
+
+
+
+
+----------------- Sort expos of all terms -----------------------
 
 sortExpos :: Expo -> Expo -> Ordering
 sortExpos exp1 exp2
@@ -197,6 +207,12 @@ sortFunctionForAllTerms (x:xs) = (sortFunctionForTerm x):(sortFunctionForAllTerm
 
 
 --------------- Divide the given array in string parts ---------------
+
+divideString :: [Char] -> [[Char]]
+divideString l
+  | (head newl == '+' || head newl == '-') = splitArray newl
+  | otherwise = splitArray ('+':newl)
+  where newl = (filter (\x -> (x /=' ')) l)
 
 splitArray :: [Char] -> [[Char]]
 splitArray [] = [[]]
