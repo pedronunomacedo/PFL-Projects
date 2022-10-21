@@ -35,6 +35,7 @@ main = do
         putStrLn ""
         putStrLn ("Polinómio normalizado: ")
         print $ option1 polinomio
+        putStrLn ""
       else if (opção == "2")
         then do
           putStrLn ("Escreva o primeiro polinómio")
@@ -45,10 +46,28 @@ main = do
           putStrLn ""
           putStrLn ("Resultado: ")
           print $ option2 polinomio1 polinomio2
+          putStrLn ""
         else if (opção == "3")
-          then putStrLn ("escolheu a opcao " ++ opção ++ "\n")
+          then do
+            putStrLn ("Escreva o primeiro polinómio")
+            polinomio1 <- getLine
+            putStrLn ""
+            putStrLn ("Escreva o segundo polinómio")
+            polinomio2 <- getLine
+            putStrLn ""
+            putStrLn ("Resultado: ")
+            print $ option3 polinomio1 polinomio2
+            putStrLn ""
           else if (opção == "4")
-            then putStrLn ("escolheu a opcao " ++ opção ++ "\n")
+            then do
+              putStrLn ("Escreva o polinómio")
+              polinomio <- getLine
+              putStrLn ""
+              putStrLn ("Qual a variável pela qual quer derivar")
+              variavel <- getLine
+              putStrLn ""
+              putStrLn ("Resultado: ")
+              print $ option4 polinomio variavel
             else error "Escolha um número entre 1 e 4"
 
 
@@ -66,8 +85,10 @@ main = do
 -------------------------------- Opção 1 ------------------------------
 
 option1 :: [Char] -> [Char]
-option1 l = allTermsToString (sortAllListByExpos (addTermsWithSameExponents (sortAllListByExpos (sameVarSumExponentsForAllTerms (removeZeros (sortFunctionForAllTerms(allInTerm (divideString l))))))))
+option1 l = allTermsToString (simplificar l)
 
+simplificar :: [Char] -> [Term]
+simplificar l = sortAllListByExpos (addTermsWithSameExponents (sortAllListByExpos (sameVarSumExponentsForAllTerms (removeZeros (sortFunctionForAllTerms(allInTerm (divideString l)))))))
 
 removeZeros :: [Term] -> [Term]
 removeZeros [] = []
@@ -144,14 +165,61 @@ option2 a b
 
 
 
-
-
-
   -------------------------------- Opção 3 ------------------------------
+
+option3 :: [Char] -> [Char] -> [Char]
+option3 a b = allTermsToString(sortAllListByExpos (addTermsWithSameExponents (sortAllListByExpos (sameVarSumExponentsForAllTerms (removeZeros (sortFunctionForAllTerms(multiplyPolys simpA simpB)))))))
+                where simpA = simplificar a
+                      simpB = simplificar b
+
+joinExpos :: Term -> Term -> Term
+joinExpos p1 p2 = Term ((number p1) * (number p2)) ((expos p1)++(expos p2))
+
+multiplyPolys :: [Term] -> [Term] -> [Term]
+multiplyPolys pol1 pol2 = [ (joinExpos p1 p2)| p1 <- pol1, p2 <- pol2]
+
+
+
+
+
+
+
+-------------------------------- Opção 4 ------------------------------
+
+
+option4 :: [Char] -> [Char] -> [Char]
+option4 l v = allTermsToString (derivateExpo (simplificar l) (stringToChar v))
+
+stringToChar :: [Char] -> Char
+stringToChar [x] = x
+
 {-
-option3 :: [Char] -> [Char] -> [Term]
-option3 a b
+option5 :: Term -> Char -> [Char]
+option5 l v = termToString (derivateExpo l v)
+
+derivateExpo :: Term -> Char -> Term
+derivateExpo l v = if ((var(head (expos l))) == v) then (Term ((fromIntegral(exponant(head (expos l)))::Float) * (number l)) [Expo (var(head (expos l))) ((exponant(head (expos l))) - 1)]) else l
 -}
+
+derivateTerm :: Term -> Char -> Term
+derivateTerm t ch
+  | ((length charExpo) == 0) = Term 0 []
+  | ((length charExpo) /= 0 && (var (head charExpo)) == ' ') = Term 0 []
+  | ((length charExpo) /= 0) = Term ((number t) * (fromIntegral (exponant expo))) ([Expo (var expo) ((exponant expo) - 1)]++notCharExpo)
+  | otherwise = t
+  where charExpo = (filter (\e -> (var e == ch)) (expos t))
+        expo = (head (filter (\e -> (var e == ch)) (expos t)))
+        notCharExpo = (filter (\e -> (var e /= ch)) (expos t))
+
+derivateExpo :: [Term] -> Char -> [Term]
+derivateExpo [] _ = []
+derivateExpo t ' ' = t
+derivateExpo terms ch = map (\t -> (derivateTerm t ch)) terms
+
+
+
+
+
 
 
 
@@ -340,4 +408,6 @@ expoToString [] = []
 expoToString [x]
   | (x == Expo ' ' 0) = []
   | otherwise = [var x]++"^"++show(exponant x)
-expoToString (x:xs) = ([var x]++"^"++show(exponant x))++"*"++(expoToString xs)
+expoToString (x:xs)
+  | (expoToString xs == []) = ([var x]++"^"++show(exponant x))++(expoToString xs)
+  | otherwise = ([var x]++"^"++show(exponant x))++"*"++(expoToString xs)
