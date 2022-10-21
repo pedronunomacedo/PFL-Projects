@@ -65,22 +65,23 @@ main = do
 
 -------------------------------- Opção 1 ------------------------------
 
-option1 :: [Char] -> [Term]
-option1 l = sortAllListByExpos (addTermsWithSameExponents (sortAllListByExpos (sameVarSumExponentsForAllTerms (removeZeroNumbersTerms (sortFunctionForAllTerms(allInTerm (divideString l)))))))
+option1 :: [Char] -> [Char]
+option1 l = allTermsToString (sortAllListByExpos (addTermsWithSameExponents (sortAllListByExpos (sameVarSumExponentsForAllTerms (removeZeros (sortFunctionForAllTerms(allInTerm (divideString l))))))))
 
---esta nao está mal mas chama a outra de baixo que está mal
-{-
+
 removeZeros :: [Term] -> [Term]
 removeZeros [] = []
 removeZeros l = removeZeroExponants (removeZeroNumbersTerms l)
--}
--- esta é que está mal. Tem que retornar     Expo [var = ' ', exponant = 0]   e não  Expo []
-{-
+
 removeZeroExponants :: [Term] -> [Term]
 removeZeroExponants [] = []
-removeZeroExponants [x] = [Term (number x) (map (\y -> if (exponant y == 0) then (Expo ' ' 0) else y) (expos x))]
-removeZeroExponants (x:xs) = (Term (number x) (filter (\x -> (exponant x /= 0)) (expos x))):(removeZeroExponants xs)
--}
+removeZeroExponants (x:xs) = (Term (number x) (mapExpos (expos x))):(removeZeroExponants xs)
+
+mapExpos :: [Expo] -> [Expo]
+mapExpos [x] = if (exponant x == 0) then [Expo ' ' 0] else [x]
+mapExpos (x:xs)
+  | (exponant x == 0) = (Expo ' ' 0):(mapExpos xs)
+  | otherwise = x:(mapExpos xs)
 
 removeZeroNumbersTerms :: [Term] -> [Term]
 removeZeroNumbersTerms [] = []
@@ -130,7 +131,7 @@ sortAllListByExpos (x:xs) = myinsert x (sortAllListByExpos xs)
 
 -------------------------------- Opção 2 ------------------------------
 
-option2 :: [Char] -> [Char] -> [Term]
+option2 :: [Char] -> [Char] -> [Char]
 option2 a b
   | (head b == '-') = option1 (a ++ b)
   | otherwise = option1 (a ++ "+" ++ b)
@@ -307,3 +308,36 @@ orderExpos [x] = [x]
 orderExpos (x:xs)
   | (ord(var x) < ord(var (head xs))) = [x]++(orderExpos xs)
   | otherwise = (orderExpos xs)++[x]
+
+
+
+
+
+
+
+
+
+
+
+
+
+------------------------------- Term to String ------------------------
+
+allTermsToString :: [Term] -> [Char]
+allTermsToString [] = []
+allTermsToString [x] = termToString x
+allTermsToString (x:xs)
+  | ((number (head xs)) < 0) = termToString x ++ " " ++ allTermsToString xs
+  | otherwise = termToString x ++ " + " ++ allTermsToString xs
+
+termToString :: Term -> [Char]
+termToString t
+  | ((head (expos t)) == Expo ' ' 0) = show(number t) ++ expoToString(expos t)
+  | otherwise = show(number t)++"*"++expoToString(expos t)
+
+expoToString :: [Expo] -> [Char]
+expoToString [] = []
+expoToString [x]
+  | (x == Expo ' ' 0) = []
+  | otherwise = [var x]++"^"++show(exponant x)
+expoToString (x:xs) = ([var x]++"^"++show(exponant x))++"*"++(expoToString xs)
