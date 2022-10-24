@@ -183,7 +183,10 @@ multiplyPolys pol1 pol2 = [ (joinExpos p1 p2)| p1 <- pol1, p2 <- pol2]
 -- function that displays the result of the option 4
 -- first normalizes the polynomial and derivates it in order to the input variable and then normalizes the result again
 option4 :: [Char] -> [Char] -> [Char]
-option4 l v = option1 (allTermsToString (derivateExpo (simplificar l) (stringToChar v)))
+option4 l v
+  | (derivateLV == "") = "0"
+  | otherwise = derivateLV
+  where derivateLV = option1 (allTermsToString (derivateExpo (simplificar l) (stringToChar v)))
 
 -- changes the variable from string input to char
 stringToChar :: [Char] -> Char
