@@ -349,6 +349,8 @@ allTermsToString (x:xs)
 -- Transforms Terms back to string to display on the result
 termToString :: Term -> [Char]
 termToString t
+  | ((number t == 1) && ((head(expos t)) == (Expo (var (head(expos t))) 0)) && (expoToString(expos t) == [])) = "1"++expoToString(expos t)
+  | ((number t == 1) && ((head(expos t)) == (Expo (var (head(expos t))) 0))) = "1"++"*"++expoToString(expos t)
   | (number t == 1) = expoToString(expos t)
   | (number t == -1) = "-"++expoToString(expos t)
   | ((head (expos t)) == Expo ' ' 0) = show(number t) ++ expoToString(expos t)
