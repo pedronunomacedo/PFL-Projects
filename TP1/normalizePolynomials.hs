@@ -76,7 +76,10 @@ main = do
 
 -- function that displays the result of the option 1 and transforms the data in string to print
 option1 :: [Char] -> [Char]
-option1 l = allTermsToString (simplificar l)
+option1 l
+  | (option1aux == "") = "0"
+  | otherwise = option1aux
+  where option1aux = allTermsToString (sortAllListByExpos (addTermsWithSameExponents (sortAllListByExpos (sameVarSumExponentsForAllTerms (removeZeros (sortFunctionForAllTerms(simplificar l)))))))
 
 -- function that calls all the functions that simplify a polynomial
 simplificar :: [Char] -> [Term]
@@ -164,9 +167,12 @@ option2 a b
 -- function that displays the result of the option 3
 -- first normalizes both inputs and multiplies them and then normalizes the result again
 option3 :: [Char] -> [Char] -> [Char]
-option3 a b = allTermsToString(sortAllListByExpos (addTermsWithSameExponents (sortAllListByExpos (sameVarSumExponentsForAllTerms (removeZeros (sortFunctionForAllTerms(multiplyPolys simpA simpB)))))))
-                where simpA = simplificar a
-                      simpB = simplificar b
+option3 a b
+  | (option3aux == "") = "0"
+  | otherwise = option3aux
+      where simpA = simplificar a
+            simpB = simplificar b
+            option3aux = allTermsToString(sortAllListByExpos (addTermsWithSameExponents (sortAllListByExpos (sameVarSumExponentsForAllTerms (removeZeros (sortFunctionForAllTerms(multiplyPolys simpA simpB)))))))
 
 -- multiplies the coeficient of two terms and concatenates their variables and exponents
 joinExpos :: Term -> Term -> Term
