@@ -13,7 +13,7 @@
 
 boardSize(BoardSize) :-
   repeat,
-    write("Size of the board: "),
+    write('Size of the board: '),
     read(BoardSize),
     number(BoardSize),
     (BoardSize > 0), nl, !.
@@ -24,7 +24,7 @@ createLine(N, ['-'|Rest]) :-
   createLine(Next, Rest).
 
 createBoard(0, []).
-createBoard(N, [_|Rest]) :-
+createBoard(N, [createLine(N, Line)|Rest]) :-
   Next is N-1,
   createBoard(Next, Rest).
 
