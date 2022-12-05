@@ -5,18 +5,66 @@
 
 
 
-initial(board([['-','-','-','-','-','-','-','-','-','-','-'],
-               ['-','-','-','-','-','-','-','-','-','-','-'],
-               ['-','-','-','-','-','-','-','-','-','-','-'],
-               ['-','-','-','-','-','-','-','-','-','-','-'],
-               ['-','-','-','-','-','-','-','-','-','-','-'],
-               ['-','-','-','-','-','-','-','-','-','-','-'],
-               ['-','-','-','-','-','-','-','-','-','-','-'],
-               ['-','-','-','-','-','-','-','-','-','-','-'],
-               ['-','-','-','-','-','-','-','-','-','-','-'],
-               ['-','-','-','-','-','-','-','-','-','-','-'],
-               ['-','-','-','-','-','-','-','-','-','-','-']])).
 
+
+:- dynamic board/1.
+
+
+
+boardSize(BoardSize) :-
+  repeat,
+    write("Size of the board: "),
+    read(BoardSize),
+    number(BoardSize),
+    (BoardSize > 0), nl, !.
+
+createLine(0, []).
+createLine(N, ['-'|Rest]) :-
+  Next is N-1,
+  createLine(Next, Rest).
+
+createBoard(0, []).
+createBoard(N, [_|Rest]) :-
+  Next is N-1,
+  createBoard(Next, Rest).
+
+printBoard(0,_,_).
+printBoard(N, Board, [Line|Rest]) :-
+  Space is Board-N,
+  writeSpace(Space),
+  printLine(Line),
+  Next is N-1,
+  printBoard(Next, Board, Rest).
+
+writeSpace(Space) :-
+  Space > 9,
+  print_n(Space-1, ' ').
+
+writeSpace(Space) :-
+  print_n(Space, ' ').
+
+printLine([]) :- nl.
+printLine([Elem|Rest]) :-
+  write(Elem),
+  write(' '),
+  printLine(Rest).
+
+
+
+
+
+play :-
+  boardSize(BoardSize),
+  createBoard(BoardSize, Board),
+  assert(board(Board)).
+
+
+
+
+
+
+
+/*
 show(board(X)) :-
   print_n(2, ' '),
   write('A B C D E F G H I J K'), nl,
@@ -66,7 +114,7 @@ print_n(N, C):-
 
 play :-
   display_game('Initial'),
-  ask_color,
+  ask_symbol,
   takeInput.
 
 
@@ -78,27 +126,22 @@ initial_state :-
 display_game('Initial') :-
   initial_state.
 
-/*display_game(GameState) :-*/
+display_game(GameState) :-
 
 
 
-ask_color :-
+ask_symbol :-
   repeat,
-    write('Choose a color (Blue or Red)? '),
-    read(Color),
-    (Color = 'Blue'; Color = 'Red'), nl, !.
+    write('Choose your symbol (X or O): '),
+    read(Symbol),
+    (Symbol = 'X'; Symbol = 'O'; Symbol = 'x'; Symbol = 'o'), nl, !.
 
 
 
 takeInput :-
   write('Next move: '),
   read(Move), nl.
-
-
-
-
-
-
+*/
 
 
 
