@@ -7,13 +7,16 @@
 
 
 
-:- dynamic(board/1).
+:- dynamic board/1, player/1.
 
 alphLetters(['A','B','C','D','E','F','G','H',
             'I','J','K','L','M','N','O','P',
             'Q','R','S','T','U','V','W','X',
             'Y','Z']).
 
+
+cls:-
+  write('\33\[2J').
 
 
 boardSize(BoardSize) :-
@@ -36,6 +39,22 @@ createBoard(N, BoardSize, [Line|Rest]) :-
   createLine(BoardSize, Line),
   Next is N-1,
   createBoard(Next, BoardSize, Rest).
+
+
+
+
+createLineNew(0, []).
+createLineNew(N, ['X'|Rest]) :-
+  Next is N-1,
+  createLine(Next, Rest).
+
+createBoardNew(0, _,_).
+createBoardNew(N, BoardSize, [Line|Rest]) :-
+  createLineNew(BoardSize, Line),
+  Next is N-1,
+  createBoard(Next, BoardSize, Rest).
+
+
 
 
 printLine([]).
@@ -91,47 +110,51 @@ printAllBoard(BoardSize, Board) :-
 
 
 
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%% MAIN %%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+
+
 play :-
+  cls,
   boardSize(BoardSize),
+  cls,
   createBoard(BoardSize, BoardSize, Board),
-  printAllBoard(BoardSize, Board),
-  assert(board(Board)).
+  assert(board(Board)),
+  assert(player(1)),
+  printAllBoard(BoardSize, Board), nl,
+  ask_symbol,
+  game(Board, BoardSize).
 
 
 
 
 
-/*
-show(board(X)) :-
-  print_n(2, ' '),
-  write('A B C D E F G H I J K'), nl,
-  iShow(X, 1),
-  print_n(14, ' '),
-  write('A B C D E F G H I J K'), nl, nl.
 
-iShow(_,12).
-iShow(X,N):-
-  showLine(X,N,X2),
-  Ns is N+1,
-  iShow(X2,Ns).
+game(Board, BoardSize) :-
+  player(Player),
+  write(Player), nl,
+  takeInput,
+  cls,
 
-showLine(X,N,X2):-
-  N > 9,
-  print_n(N-1, ' '),
-  write(N), write(' '),
-  iShowLine(X,X2),
-  write(N), nl.
+  retract(player(Player)),
+  NewPlayer is (mod(Player, 2) + 1),
+  assert(player(NewPlayer)),
 
-showLine(X,N,X2):-
-  print_n(N, ' '),
-  write(N), write(' '),
-  iShowLine(X,X2),
-  write(N), nl.
+  retract(board(Board)),
+  createBoardNew(BoardSize, BoardSize, BoardNew),
+  assert(board(BoardNew)),
 
-iShowLine([],_).
-iShowLine([[X|X2]|XS],[X2|XS2]):-
-  write(X), write(' '),
-  iShowLine(XS,XS2).
+  printAllBoard(BoardSize, BoardNew), nl,
+  game(BoardNew, BoardSize).
+
+
+
 
 
 
@@ -141,6 +164,8 @@ iShowLine([[X|X2]|XS],[X2|XS2]):-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
+
+/*
 
 play :-
   display_game('Initial'),
@@ -159,7 +184,7 @@ display_game('Initial') :-
 display_game(GameState) :-
 
 
-
+*/
 ask_symbol :-
   repeat,
     write('Choose your symbol (X or O): '),
@@ -171,7 +196,7 @@ ask_symbol :-
 takeInput :-
   write('Next move: '),
   read(Move), nl.
-*/
+
 
 
 
