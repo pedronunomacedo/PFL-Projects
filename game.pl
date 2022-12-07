@@ -10,9 +10,9 @@
 :- dynamic(board/1).
 
 alphLetters(['A','B','C','D','E','F','G','H',
-                'I','J','K','L','M','N','O','P',
-                'Q','R','S','T','U','V','W','X',
-                'Y','Z']).
+            'I','J','K','L','M','N','O','P',
+            'Q','R','S','T','U','V','W','X',
+            'Y','Z']).
 
 
 
@@ -24,10 +24,12 @@ boardSize(BoardSize) :-
     (BoardSize > 0),
     (BoardSize < 27), nl, !.
 
+
 createLine(0, []).
 createLine(N, ['-'|Rest]) :-
   Next is N-1,
   createLine(Next, Rest).
+
 
 createBoard(0, _,_).
 createBoard(N, BoardSize, [Line|Rest]) :-
@@ -35,11 +37,35 @@ createBoard(N, BoardSize, [Line|Rest]) :-
   Next is N-1,
   createBoard(Next, BoardSize, Rest).
 
+
 printLine([]).
 printLine([Elem|Rest]) :-
   write(Elem),
   write(' '),
   printLine(Rest).
+
+
+printLetters(0, _, _).
+printLetters(N, BoardSize, [Letter|Rest]) :-
+  write(' '),
+  write(Letter),
+  Next is N - 1,
+  printLetters(Next, BoardSize, Rest).
+
+
+writeSpace(Space) :-
+  Space > 8,
+  print_n(Space-1, ' ').
+
+writeSpace(Space) :-
+  print_n(Space, ' ').
+
+print_n(0, _C):- !.
+print_n(N, C):-
+  write(C),
+  N1 is N-1,
+  print_n(N1, C).
+
 
 printBoardLines(0,_,_).
 printBoardLines(N, BoardSize, [Line|Rest]) :-
@@ -53,6 +79,7 @@ printBoardLines(N, BoardSize, [Line|Rest]) :-
   Next is N-1,
   printBoardLines(Next, BoardSize, Rest).
 
+
 printAllBoard(BoardSize, Board) :-
   alphLetters(Letters),
   printLetters(BoardSize, BoardSize, Letters), nl,
@@ -60,29 +87,15 @@ printAllBoard(BoardSize, Board) :-
   print_n(BoardSize+1, ' '),
   printLetters(BoardSize, BoardSize, Letters), nl.
 
-writeSpace(Space) :-
-  Space > 8,
-  print_n(Space-1, ' ').
 
-writeSpace(Space) :-
-  print_n(Space, ' ').
-
-printLetters(0, _, _).
-printLetters(N, BoardSize, [Letter|Rest]) :-
-  write(' '),
-  write(Letter),
-  Next is N - 1,
-  printLetters(Next, BoardSize, Rest).
 
 
 
 play :-
   boardSize(BoardSize),
   createBoard(BoardSize, BoardSize, Board),
-  % printLine(Board).
-  % assert(board(Board)),
-  printAllBoard(BoardSize, Board).
-
+  printAllBoard(BoardSize, Board),
+  assert(board(Board)).
 
 
 
@@ -119,14 +132,7 @@ iShowLine([],_).
 iShowLine([[X|X2]|XS],[X2|XS2]):-
   write(X), write(' '),
   iShowLine(XS,XS2).
-*/
-print_n(0, _C):- !.
-print_n(N, C):-
-  write(C),
-  N1 is N-1,
-  print_n(N1, C).
 
-/*
 
 
 
