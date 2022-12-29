@@ -13,22 +13,24 @@ askForOption(Option) :-
 
 
 
-verifyInput1(Board, Row, Column, SymbolToVerify, Exists) :-
+verifyInput1(Board, Row, Column, SymbolToVerify, Exists, BoardSize) :-
+    (Row >= 0), (Row < BoardSize), (Column >= 0), (Column < BoardSize), 
     nth0(Row, Board, X),
     nth0(Column, X, '-'), 
     Exists is 1, nl.
 
-verifyInput1(Board, Row, Column, SymbolToVerify, 0) :-
+verifyInput1(Board, Row, Column, SymbolToVerify, Exists, BoardSize) :-
     Exists is 0, nl.
 
 
 
-verifyInput2(Board, Row, Column, SymbolToVerify, Exists) :-
+verifyInput2(Board, Row, Column, SymbolToVerify, Exists, BoardSize) :-
+    (Row >= 0), (Row < BoardSize), (Column >= 0), (Column < BoardSize), 
     nth0(Row, Board, X),
     nth0(Column, X, SymbolToVerify), 
     Exists is 1, nl.
 
-verifyInput2(Board, Row, Column, SymbolToVerify, 0) :-
+verifyInput2(Board, Row, Column, SymbolToVerify, 0, BoardSize) :-
     Exists is 0, nl.
 
 

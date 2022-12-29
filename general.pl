@@ -28,7 +28,7 @@ takeInput1(Column, Row, Board, BoardSize, SymbolToVerify) :-
     nl, write('Row: '),
     read(ReadRow),
     Row is ReadRow-1, 
-    verifyInput1(Board, Row, Column, SymbolToVerify, Exists), 
+    verifyInput1(Board, Row, Column, SymbolToVerify, Exists, BoardSize), 
     (Exists = 1), nl.
 
 takeInput1(Column, Row, Board, BoardSize, SymbolToVerify) :-
@@ -46,8 +46,7 @@ takeInput2(Column, Row, Board, BoardSize, SymbolToVerify) :-
     write('Row: '),
     read(ReadRow),
     Row is ReadRow-1, 
-    verifyInput2(Board, Row, Column, SymbolToVerify, Exists), 
-    (Exists = 1), nl.
+    verifyInput2(Board, Row, Column, SymbolToVerify, Exists, BoardSize), nl.
 
 takeInput2(Column, Row, Board, BoardSize, SymbolToVerify) :-
     write('Move not valid! '), nl,
@@ -66,21 +65,3 @@ getPlayerSymbol(Player, PlayerSymbol) :-
 getPlayerSymbol(Player, PlayerSymbol) :-
     (Player = 2),
     PlayerSymbol = 'o'.
-
-
-
-
-takeInput2(Column, Row, Board, BoardSize, SymbolToVerify) :-
-    write('Next move:'), nl,
-    write('Column: '),
-    read(Letter),
-    alphLetters(Letters),
-    nth0(Column, Letters, Letter),
-    nl, write('Row: '),
-    read(ReadRow),
-    Row is ReadRow-1,
-    verifyInput(Board, Row, Column, SymbolToVerify).
-
-takeInput2(Column, Row, Board, BoardSize, SymbolToVerify) :-
-    write('Move not valid! '), 
-    takeInput2(Column, Row, Board, BoardSize, SymbolToVerify). 
