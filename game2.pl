@@ -171,6 +171,7 @@ game_cycle(BoardSize, Board, N) :-
 
     
     game_over(BoardNew, PlayerSymbol, BoardSize, GameOver1),
+    write('GameOver1 = '), write(GameOver1), nl, 
     (GameOver1 == 1 ->
         nl
         ;
