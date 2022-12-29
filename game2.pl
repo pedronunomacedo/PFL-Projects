@@ -170,11 +170,7 @@ game_cycle(BoardSize, Board, N) :-
     printAllBoard(BoardSize, BoardNew), nl, % intermediate board
 
     
-    game_over(BoardNew, PlayerSymbol, BoardSize, GameOver1),
-    write('GameOver1 = '), write(GameOver1), nl, 
-    (GameOver1 == 1 ->
-        nl
-        ;
+
         takeInput2(Column2, Row2, BoardNew, BoardSize, 'n'),
         retract(board(BoardNew)),
         createBoardNew(BoardSize, BoardSize, Column2, Row2, BoardNew, IntBoardNew, PlayerSymbol), % 2nd neutral stone -> 2nd player stone
@@ -182,28 +178,26 @@ game_cycle(BoardSize, Board, N) :-
         printAllBoard(BoardSize, IntBoardNew), nl, % intermediate board
 
         
-        game_over(IntBoardNew, PlayerSymbol, BoardSize, GameOver2),
-        (GameOver2 == 1 ->
+        takeInput2(Column3, Row3, IntBoardNew, BoardSize, PlayerSymbol),
+        retract(board(IntBoardNew)),
+        createBoardNew(BoardSize, BoardSize, Column3, Row3, IntBoardNew, FinalBoard, 'n'), % player stone -> neutral stone
+        assert(board(FinalBoard)),
+        cls, 
+        printAllBoard(BoardSize, FinalBoard), nl, % final board    
+
+        game_over(FinalBoard, PlayerSymbol, BoardSize, GameOver),
+
+        (GameOver == 1 ->
             nl
             ;
-            takeInput2(Column3, Row3, IntBoardNew, BoardSize, PlayerSymbol),
-            retract(board(IntBoardNew)),
-            createBoardNew(BoardSize, BoardSize, Column3, Row3, IntBoardNew, FinalBoard, 'n'), % player stone -> neutral stone
-            assert(board(FinalBoard)),
-            cls, 
-
-            printAllBoard(BoardSize, FinalBoard), nl, % final board
-
+            Next is N+1,
             retract(player(Player)),
             NewPlayer is (mod(Player, 2) + 1),
             assert(player(NewPlayer)),
-
-            Next is N+1,
-
             game_cycle(BoardSize, FinalBoard, Next)
-        )
-    ).
-
+        ).
+        
+        
 
 game_cycle(BoardSize, Board, N) :- false.
 
