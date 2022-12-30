@@ -16,6 +16,14 @@ game_cycle4(BoardSize, Board, N, OptionMenu, OptionDifficulty) :-
     createBoardNew(BoardSize, BoardSize, Column, Row, Board, BoardNew, PlayerSymbol), % Put the stone with our colour
     assert(board(BoardNew)),
 
+    count_2d('-', BoardNew, Count),
+    (Count == 0 ->
+        printAllBoard(BoardSize, BoardNew), nl, nl, nl, nl,
+        draw, !
+        ;
+        nl    
+    ),
+
     
     game_over(BoardNew, PlayerSymbol, BoardSize, GameOver), 
 
@@ -29,7 +37,13 @@ game_cycle4(BoardSize, Board, N, OptionMenu, OptionDifficulty) :-
         createBoardNew(BoardSize, BoardSize, ColumnNeutral, RowNeutral, BoardNew, FinalBoard, 'n'), % Put the neutral stone
         assert(board(FinalBoard)),
 
-        
+        count_2d('-', FinalBoard, Count1),
+        (Count1 == 0 ->
+            printAllBoard(BoardSize, FinalBoard), nl, nl, nl, nl,
+            draw, !
+            ;
+            nl    
+        ),
 
         
         % press_enter_to_continue
@@ -43,15 +57,6 @@ game_cycle4(BoardSize, Board, N, OptionMenu, OptionDifficulty) :-
         % write('Press 1 to continue: '),
         % read(Ola),
         % (Ola = 1), nl, nl, nl,
-
-        count_2d('-', FinalBoard, Count),
-
-        (Count == 0 ->
-            printAllBoard(BoardSize, FinalBoard), nl, nl, nl, nl,
-            draw, !
-            ;
-            nl    
-        ),
 
         cls,
         initialMenuDisplay,

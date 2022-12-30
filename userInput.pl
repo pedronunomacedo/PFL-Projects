@@ -33,17 +33,31 @@ difficultyMenu(OptionDifficulty) :-
 
 
 
-askForOption(Option) :-
-    repeat,
-        write('Choose an option (1 or 2): '), nl,
-        print_n(4, ' '), 
-        write('1. Place a stone of their color AND a neutral stone on empty cells'), nl, 
-        print_n(4, ' '), 
-        write('2. Replace two neutral stones with stones of their color, AND replace a different stone of their color on the board to neutral stone'), nl, 
-        print_n(4, ' '), 
-        write('Option: '), 
-        read(Option),
-        (Option = 1; Option = 2), nl, !.
+askForOption(Option, Board, PlayerSymbol) :-
+    count_2d(PlayerSymbol, Board, CountPlayer), 
+    count_2d('n', Board, CountNeutrals),
+    
+    ((CountPlayer >= 1 , CountNeutrals >= 2) ->
+        repeat,
+            write('Choose an option (1 or 2): '), nl,
+            print_n(4, ' '), 
+            write('1. Place a stone of their color AND a neutral stone on empty cells'), nl, 
+            print_n(4, ' '), 
+            write('2. Replace two neutral stones with stones of their color, AND replace a different stone of their color on the board to neutral stone'), nl, 
+            print_n(4, ' '), 
+            write('Option: '), 
+            read(Option),
+            (Option = 1; Option = 2), nl, !
+        ;
+        repeat,
+            write('Choose an option (1 or 2): '), nl,
+            print_n(4, ' '), 
+            write('1. Place a stone of their color AND a neutral stone on empty cells'), nl, 
+            print_n(4, ' '), 
+            write('Option: '), 
+            read(Option),
+            (Option = 1), nl, !
+    ).
 
 
 
@@ -82,3 +96,17 @@ askToSwitch(Answer) :-
         write('Do you want to switch symbols with the other player? (y/n)'),
         read(Answer),
         (Answer = 'y'; Answer = 'n'), nl, !.
+
+
+
+
+
+% count_2d(PlayerSymbol, Board, CountPlayer), 
+% count_2d('n', Board, CountNeutrals),
+
+% Option = _, 
+% ((CountPlayer >= 1 ; CountNeutrals >= 2) ->
+%     askForOption(Option)
+%     ;
+%     askForOption1(Option)
+% ),

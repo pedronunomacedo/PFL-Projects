@@ -11,8 +11,8 @@ game_cycle1(BoardSize, Board, N, OptionMenu) :-
     write('Player '), write(PlayerSymbol), write(' : '), nl, nl,
     askToSwitch(Answer),
     (Answer = 'n'),
-
-    askForOption(Option), 
+    
+    askForOption(Option, Board, PlayerSymbol), 
     (Option = 1), 
 
     takeInput1(Column, Row, Board, BoardSize, PlayerSymbol), nl,  nl, % stone of their color
@@ -20,6 +20,14 @@ game_cycle1(BoardSize, Board, N, OptionMenu) :-
     retract(board(Board)),
     createBoardNew(BoardSize, BoardSize, Column, Row, Board, BoardNew, PlayerSymbol), % Put the stone with our colour
     assert(board(BoardNew)),
+
+    count_2d('-', BoardNew, Count),
+    (Count == 0 ->
+        printAllBoard(BoardSize, BoardNew), nl, nl, nl, nl,
+        draw, !
+        ;
+        nl    
+    ),
     
     game_over(BoardNew, PlayerSymbol, BoardSize, GameOver), 
     (GameOver == 1 ->
@@ -29,6 +37,17 @@ game_cycle1(BoardSize, Board, N, OptionMenu) :-
         takeInput1(ColumnNeutral, RowNeutral, BoardNew, BoardSize, 'n'), nl, nl, % neutral stone
         createBoardNew(BoardSize, BoardSize, ColumnNeutral, RowNeutral, BoardNew, FinalBoard, 'n'), % Put the neutral stone
         assert(board(FinalBoard)),
+
+        count_2d('-', FinalBoard, Count1),
+        (Count1 == 0 ->
+            printAllBoard(BoardSize, FinalBoard), nl, nl, nl, nl,
+            draw, !
+            ;
+            nl    
+        ),
+
+        
+
         cls,
         initialMenuDisplay,
 
@@ -75,15 +94,24 @@ game_cycle1(BoardSize, Board, N, OptionMenu) :-
     getPlayerSymbol(Player, PlayerSymbol),
     write('Player '), write(PlayerSymbol), write(' : '), nl, nl,
 
-    askForOption(Option), 
+    askForOption(Option, Board, PlayerSymbol), 
     (Option = 1), 
-    
     
     takeInput1(Column, Row, Board, BoardSize, PlayerSymbol), nl,  nl, % stone of their color
 
     retract(board(Board)),
     createBoardNew(BoardSize, BoardSize, Column, Row, Board, BoardNew, PlayerSymbol), % Put the stone with our colour
     assert(board(BoardNew)),
+
+    count_2d('-', BoardNew, Count),
+    (Count == 0 ->
+        printAllBoard(BoardSize, BoardNew), nl, nl, nl, nl,
+        draw, !
+        ;
+        nl    
+    ),
+
+    
 
     
     game_over(BoardNew, PlayerSymbol, BoardSize, GameOver), 
@@ -94,6 +122,14 @@ game_cycle1(BoardSize, Board, N, OptionMenu) :-
         takeInput1(ColumnNeutral, RowNeutral, BoardNew, BoardSize, 'n'), nl, nl, % neutral stone
         createBoardNew(BoardSize, BoardSize, ColumnNeutral, RowNeutral, BoardNew, FinalBoard, 'n'), % Put the neutral stone
         assert(board(FinalBoard)),
+
+        count_2d('-', FinalBoard, Count1),
+        (Count1 == 0 ->
+            printAllBoard(BoardSize, FinalBoard), nl, nl, nl, nl,
+            draw, !
+            ;
+            nl    
+        ),write('herererere'), nl,
         cls,
         initialMenuDisplay,
 
@@ -124,6 +160,7 @@ game_cycle1(BoardSize, Board, N, OptionMenu) :-
     retract(board(Board)),
     createBoardNew(BoardSize, BoardSize, Column, Row, Board, BoardNew, PlayerSymbol), % 1st neutral stone -> 1st player stone
     assert(board(BoardNew)), nl, 
+    
     printAllBoard(BoardSize, BoardNew), nl, % intermediate board
 
     
@@ -133,6 +170,7 @@ game_cycle1(BoardSize, Board, N, OptionMenu) :-
     retract(board(BoardNew)),
     createBoardNew(BoardSize, BoardSize, Column2, Row2, BoardNew, IntBoardNew, PlayerSymbol), % 2nd neutral stone -> 2nd player stone
     assert(board(IntBoardNew)),
+
     printAllBoard(BoardSize, IntBoardNew), nl, % intermediate board
 
     
@@ -142,6 +180,7 @@ game_cycle1(BoardSize, Board, N, OptionMenu) :-
     assert(board(FinalBoard)),
     cls, 
     initialMenuDisplay,
+
     printAllBoard(BoardSize, FinalBoard), nl, % final board    
 
     game_over(FinalBoard, PlayerSymbol, BoardSize, GameOver),

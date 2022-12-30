@@ -11,7 +11,7 @@ game_cycle3(BoardSize, Board, N, OptionMenu, OptionDifficulty) :-
 
     (PlayerSymbol == 'o' ->
         write('Player '), write(PlayerSymbol), write(' : '), nl, nl,
-        askForOption(Option), 
+        askForOption(Option, Board, PlayerSymbol), 
         (Option = 1),
         takeInput1(Column, Row, Board, BoardSize, PlayerSymbol), nl,  nl % stone of their color
         ;
@@ -23,6 +23,13 @@ game_cycle3(BoardSize, Board, N, OptionMenu, OptionDifficulty) :-
     createBoardNew(BoardSize, BoardSize, Column, Row, Board, BoardNew, PlayerSymbol), % Put the stone with our colour
     assert(board(BoardNew)),
 
+    count_2d('-', BoardNew, Count),
+    (Count == 0 ->
+        printAllBoard(BoardSize, BoardNew), nl, nl, nl, nl,
+        draw, !
+        ;
+        nl    
+    ),
     
     game_over(BoardNew, PlayerSymbol, BoardSize, GameOver), 
     (GameOver == 1 ->
@@ -37,6 +44,15 @@ game_cycle3(BoardSize, Board, N, OptionMenu, OptionDifficulty) :-
         
         createBoardNew(BoardSize, BoardSize, ColumnNeutral, RowNeutral, BoardNew, FinalBoard, 'n'), % Put the neutral stone
         assert(board(FinalBoard)),
+
+        count_2d('-', FinalBoard, Count1),
+        (Count1 == 0 ->
+            printAllBoard(BoardSize, FinalBoard), nl, nl, nl, nl,
+            draw, !
+            ;
+            nl    
+        ),
+
         cls,
         initialMenuDisplay,
 
