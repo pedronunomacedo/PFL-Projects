@@ -18,18 +18,41 @@ game_cycle4(BoardSize, Board, N, OptionMenu, OptionDifficulty) :-
 
     
     game_over(BoardNew, PlayerSymbol, BoardSize, GameOver), 
+
     (GameOver == 1 ->
         printAllBoard(BoardSize, BoardNew),
         nl
         ;
  
         optionTwoBotPlay(ColumnNeutral, RowNeutral, BoardNew, BoardSize, 'n'), nl, nl,
-        write('Press 1 to continue: '),
-        read(Ola),
-        (Ola = 1), nl, nl, nl,
         
         createBoardNew(BoardSize, BoardSize, ColumnNeutral, RowNeutral, BoardNew, FinalBoard, 'n'), % Put the neutral stone
         assert(board(FinalBoard)),
+
+        
+
+        
+        % press_enter_to_continue
+        % Pauses execution and waits for the user to press the Enter key.
+        repeat,
+            write('Press Enter to continue...'), nl, nl, nl,
+            get_code(Code),
+            (Code = 10), !,
+
+        
+        % write('Press 1 to continue: '),
+        % read(Ola),
+        % (Ola = 1), nl, nl, nl,
+
+        count_2d('-', FinalBoard, Count),
+
+        (Count == 0 ->
+            printAllBoard(BoardSize, FinalBoard), nl, nl, nl, nl,
+            draw, !
+            ;
+            nl    
+        ),
+
         cls,
         initialMenuDisplay,
 

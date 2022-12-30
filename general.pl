@@ -18,19 +18,6 @@ initialMenuDisplay :-
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 cls:-
     write('\33\[2J').
 
@@ -121,3 +108,19 @@ optionTwoBotPlay(Column, Row, Board, BoardSize, SymbolToVerify) :-
         Row is NewRow,
         verifyInput1(Board, Row, Column, SymbolToVerify, Exists, BoardSize),
         (Exists = 1), nl, !.
+
+
+
+
+
+
+% count(+Element, +List, -Count)
+% Counts the number of times Element appears in List.
+count(_, [], 0).
+count(X, [X|Tail], N) :- count(X, Tail, N1), N is N1 + 1.
+count(X, [Y|Tail], N) :- X \= Y, count(X, Tail, N).
+
+% count_2d(+Element, +List2D, -Count)
+% Counts the number of times Element appears in List2D, which is a list of lists.
+count_2d(_, [], 0).
+count_2d(X, [L|Ls], N) :- count(X, L, N1), count_2d(X, Ls, N2), N is N1 + N2.

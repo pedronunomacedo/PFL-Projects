@@ -82,6 +82,13 @@ congrats :-
   
 
 
+draw :-
+    write('-------------------------------'), nl,
+    write('|           D R A W           |'), nl,
+    write('-------------------------------'), nl, nl, nl, nl, nl, nl,
+    halt.
+
+
 % game_cycle(GameState) :-
 %     game_over(GameState, Winner), !,
 %     congralute(Winner).
