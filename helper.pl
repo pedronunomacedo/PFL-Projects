@@ -35,3 +35,28 @@ isVisited(X, Y, CheckValue, Visited, ElemVisited) :-
 
 isVisited(X, Y, CheckValue, Visited, ElemVisited) :-
     ElemVisited is 0.
+
+
+
+
+
+% In the begginig, all elements weren't visited, so ElemVisited = 0
+createVisitedList([], []).
+createVisitedList([Line | BoardRest], [LineVisited | VisitedRest]) :-
+    createVisitedList_Row(Line, LineVisited), 
+    createVisitedList(BoardRest, VisitedRest).
+
+
+createVisitedList_Row([], []).
+createVisitedList_Row([Elem | LineRest], [0 | LineVisitedRest]) :-
+    createVisitedList_Row(LineRest, LineVisitedRest).
+
+printVisitedList_Row([]).
+printVisitedList_Row([Elem | LineRest]) :-
+    write(Elem), write(' '), 
+    printVisitedList_Row(LineRest).
+
+printVisitedList([]).
+printVisitedList([LineVisited | VisitedRest]) :-
+    printVisitedList_Row(LineVisited), nl, 
+    printVisitedList(VisitedRest).
