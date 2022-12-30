@@ -14,6 +14,21 @@ initialMenu(OptionMenu) :-
 
 
 
+difficultyMenu(OptionDifficulty) :-
+    repeat,
+        write('-------------------------------'), nl,
+        write('|     D I F F I C U L T Y     |'), nl,
+        write('-------------------------------'), nl,
+        write('  1. Easy'), nl,
+        write('  2. Difficult'), nl, nl,
+        write('Option: '),
+        read(OptionDifficulty),
+        (OptionDifficulty = 1; OptionDifficulty = 2), nl, !.
+
+
+
+
+
 
 
 

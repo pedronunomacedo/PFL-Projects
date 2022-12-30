@@ -79,7 +79,8 @@ takeInput2(Column, Row, Board, BoardSize, SymbolToVerify) :-
     write('Row: '),
     read(ReadRow),
     Row is ReadRow-1, 
-    verifyInput2(Board, Row, Column, SymbolToVerify, Exists, BoardSize), nl.
+    verifyInput2(Board, Row, Column, SymbolToVerify, Exists, BoardSize), nl, 
+    (Exists == 1).
 
 takeInput2(Column, Row, Board, BoardSize, SymbolToVerify) :-
     write('Move not valid! '), nl,
@@ -98,3 +99,16 @@ getPlayerSymbol(Player, PlayerSymbol) :-
 getPlayerSymbol(Player, PlayerSymbol) :-
     (Player = 2),
     PlayerSymbol = 'o'.
+
+
+
+
+
+optionTwoBotPlay(Column, Row, Board, BoardSize, SymbolToVerify) :-
+    repeat,
+        random(0, BoardSize, NewColumn),
+        Column is NewColumn,
+        random(0, BoardSize, NewRow),
+        Row is NewRow,
+        verifyInput1(Board, Row, Column, SymbolToVerify, Exists, BoardSize),
+        (Exists = 1), nl, !.

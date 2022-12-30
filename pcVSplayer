@@ -2,14 +2,14 @@
 
 % If player chooses option 1 (Place a stone of their color 
 %                         AND a neutral stone on empty cells)
-game_cycle2(BoardSize, Board, N, OptionMenu, OptionDifficulty) :-
+game_cycle3(BoardSize, Board, N, OptionMenu, OptionDifficulty) :-
     (OptionDifficulty == 1),
-    (OptionMenu == 2),
+    (OptionMenu == 3),
     player(Player),
     getPlayerSymbol(Player, PlayerSymbol),
     
 
-    (PlayerSymbol == 'x' ->
+    (PlayerSymbol == 'o' ->
         write('Player '), write(PlayerSymbol), write(' : '), nl, nl,
         askForOption(Option), 
         (Option = 1),
@@ -29,7 +29,7 @@ game_cycle2(BoardSize, Board, N, OptionMenu, OptionDifficulty) :-
         printAllBoard(BoardSize, BoardNew),
         nl
         ;
-        (PlayerSymbol == 'x' ->
+        (PlayerSymbol == 'o' ->
             takeInput1(ColumnNeutral, RowNeutral, BoardNew, BoardSize, 'n'), nl, nl % neutral stone
             ;
             optionTwoBotPlay(ColumnNeutral, RowNeutral, BoardNew, BoardSize, 'n'), nl, nl
@@ -49,15 +49,15 @@ game_cycle2(BoardSize, Board, N, OptionMenu, OptionDifficulty) :-
         
         Next is N+1,
 
-        game_cycle2(BoardSize, FinalBoard, Next, OptionMenu, OptionDifficulty)
+        game_cycle3(BoardSize, FinalBoard, Next, OptionMenu, OptionDifficulty)
     ).
 
 
 % If player choose option 2 (Replace two neutral stones with stones of their color, 
 %                         AND replace a different stone of their color on the board to neutral stone)
-game_cycle2(BoardSize, Board, N, OptionMenu, OptionDifficulty) :- 
+game_cycle3(BoardSize, Board, N, OptionMenu, OptionDifficulty) :- 
     (OptionDifficulty == 1),
-    (OptionMenu == 2),
+    (OptionMenu == 3),
     player(Player),
     getPlayerSymbol(Player, PlayerSymbol),
     (Option = 2), 
@@ -94,11 +94,10 @@ game_cycle2(BoardSize, Board, N, OptionMenu, OptionDifficulty) :-
             retract(player(Player)),
             NewPlayer is (mod(Player, 2) + 1),
             assert(player(NewPlayer)),
-            game_cycle2(BoardSize, FinalBoard, Next, OptionMenu, OptionDifficulty)
+            game_cycle3(BoardSize, FinalBoard, Next, OptionMenu, OptionDifficulty)
         ).
 
 
 
-game_cycle2(BoardSize, Board, N, OptionMenu, OptionDifficulty) :- 
+game_cycle3(BoardSize, Board, N, OptionMenu, OptionDifficulty) :- 
     false.
-        
