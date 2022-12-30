@@ -62,7 +62,8 @@ game_cycle3(BoardSize, Board, N, OptionMenu, OptionDifficulty) :-
     getPlayerSymbol(Player, PlayerSymbol),
     (Option = 2), 
 
-    takeInput2(Column, Row, Board, BoardSize, 'n'),
+    Moves = [],
+    takeInput2(Column, Row, Board, BoardSize, 'n', Moves, NewMoves1),
     retract(board(Board)),
     createBoardNew(BoardSize, BoardSize, Column, Row, Board, BoardNew, PlayerSymbol), % 1st neutral stone -> 1st player stone
     assert(board(BoardNew)), nl, 
@@ -70,32 +71,32 @@ game_cycle3(BoardSize, Board, N, OptionMenu, OptionDifficulty) :-
 
     
 
-        takeInput2(Column2, Row2, BoardNew, BoardSize, 'n'),
-        retract(board(BoardNew)),
-        createBoardNew(BoardSize, BoardSize, Column2, Row2, BoardNew, IntBoardNew, PlayerSymbol), % 2nd neutral stone -> 2nd player stone
-        assert(board(IntBoardNew)),
-        printAllBoard(BoardSize, IntBoardNew), nl, % intermediate board
+    takeInput2(Column2, Row2, BoardNew, BoardSize, 'n', NewMoves1, NewMoves2),
+    retract(board(BoardNew)),
+    createBoardNew(BoardSize, BoardSize, Column2, Row2, BoardNew, IntBoardNew, PlayerSymbol), % 2nd neutral stone -> 2nd player stone
+    assert(board(IntBoardNew)),
+    printAllBoard(BoardSize, IntBoardNew), nl, % intermediate board
 
-        
-        takeInput2(Column3, Row3, IntBoardNew, BoardSize, PlayerSymbol),
-        retract(board(IntBoardNew)),
-        createBoardNew(BoardSize, BoardSize, Column3, Row3, IntBoardNew, FinalBoard, 'n'), % player stone -> neutral stone
-        assert(board(FinalBoard)),
-        cls, 
-        initialMenuDisplay,
-        printAllBoard(BoardSize, FinalBoard), nl, % final board    
+    
+    takeInput2(Column3, Row3, IntBoardNew, BoardSize, PlayerSymbol, NewMoves2, NewMoves3),
+    retract(board(IntBoardNew)),
+    createBoardNew(BoardSize, BoardSize, Column3, Row3, IntBoardNew, FinalBoard, 'n'), % player stone -> neutral stone
+    assert(board(FinalBoard)),
+    cls, 
+    initialMenuDisplay,
+    printAllBoard(BoardSize, FinalBoard), nl, % final board    
 
-        game_over(FinalBoard, PlayerSymbol, BoardSize, GameOver),
+    game_over(FinalBoard, PlayerSymbol, BoardSize, GameOver),
 
-        (GameOver == 1 ->
-            nl
-            ;
-            Next is N+1,
-            retract(player(Player)),
-            NewPlayer is (mod(Player, 2) + 1),
-            assert(player(NewPlayer)),
-            game_cycle3(BoardSize, FinalBoard, Next, OptionMenu, OptionDifficulty)
-        ).
+    (GameOver == 1 ->
+        nl
+        ;
+        Next is N+1,
+        retract(player(Player)),
+        NewPlayer is (mod(Player, 2) + 1),
+        assert(player(NewPlayer)),
+        game_cycle3(BoardSize, FinalBoard, Next, OptionMenu, OptionDifficulty)
+    ).
 
 
 

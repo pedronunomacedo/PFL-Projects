@@ -69,8 +69,13 @@ takeInput1(Column, Row, Board, BoardSize, SymbolToVerify) :-
     takeInput1(Column, Row, Board, BoardSize, SymbolToVerify). 
 
 
+
+concat_element(List, Element, NewList) :-
+    append(List, [Element], NewList).
+
+
     
-takeInput2(Column, Row, Board, BoardSize, SymbolToVerify) :-
+takeInput2(Column, Row, Board, BoardSize, SymbolToVerify, Moves, NewMoves) :-
     write('Next move:'), nl,
     write('Column: '),
     read(Letter),
@@ -79,12 +84,16 @@ takeInput2(Column, Row, Board, BoardSize, SymbolToVerify) :-
     write('Row: '),
     read(ReadRow),
     Row is ReadRow-1, 
-    verifyInput2(Board, Row, Column, SymbolToVerify, Exists, BoardSize), nl, 
-    (Exists == 1).
+    \+ member((Row, Column), Moves), 
+    verifyInput2(Board, Row, Column, SymbolToVerify, Exists, BoardSize), 
+    (Exists = 1),
+    append(Moves, [(Row, Column)], NewMoves), 
+    concat_element(Moves, (Row, Column), NewMoves).
 
-takeInput2(Column, Row, Board, BoardSize, SymbolToVerify) :-
+
+takeInput2(Column, Row, Board, BoardSize, SymbolToVerify, Moves, NewMoves) :-
     write('Move not valid! '), nl,
-    takeInput2(Column, Row, Board, BoardSize, SymbolToVerify). 
+    takeInput2(Column, Row, Board, BoardSize, SymbolToVerify, Moves, NewMoves). 
 
 
 

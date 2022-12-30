@@ -60,12 +60,13 @@ verifyInput1(Board, Row, Column, SymbolToVerify, Exists, BoardSize) :-
 
 
 verifyInput2(Board, Row, Column, SymbolToVerify, Exists, BoardSize) :-
-    (Row >= 0), (Row < BoardSize), (Column >= 0), (Column < BoardSize), 
+    (Row >= 0), (Row < BoardSize), (Column >= 0), (Column < BoardSize),
     nth0(Row, Board, X),
+    nth0(Column, X, Elem), 
     nth0(Column, X, SymbolToVerify), 
-    Exists is 1, nl.
+    Exists is 1, !.
 
-verifyInput2(Board, Row, Column, SymbolToVerify, 0, BoardSize) :-
+verifyInput2(Board, Row, Column, SymbolToVerify, Exists, BoardSize) :-
     Exists is 0, nl.
 
 
