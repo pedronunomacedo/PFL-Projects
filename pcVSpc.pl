@@ -53,11 +53,6 @@ game_cycle4(BoardSize, Board, N, OptionMenu, OptionDifficulty) :-
             get_code(Code),
             (Code = 10), !,
 
-        
-        % write('Press 1 to continue: '),
-        % read(Ola),
-        % (Ola = 1), nl, nl, nl,
-
         cls,
         initialMenuDisplay,
 

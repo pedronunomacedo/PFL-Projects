@@ -20,14 +20,10 @@ difficultyMenu(OptionDifficulty) :-
         write('|     D I F F I C U L T Y     |'), nl,
         write('-------------------------------'), nl,
         write('  1. Easy'), nl,
-        write('  2. Difficult'), nl, nl,
+        write('  2. Difficult [Not working]'), nl, nl,
         write('Option: '),
         read(OptionDifficulty),
-        (OptionDifficulty = 1; OptionDifficulty = 2), nl, !.
-
-
-
-
+        (OptionDifficulty = 1), nl, !.
 
 
 
@@ -60,19 +56,15 @@ askForOption(Option, Board, PlayerSymbol) :-
     ).
 
 
-valid_movePC(Board, Row, Column, SymbolToVerify, Exists, BoardSize) :-
+valid_move(Board, Row, Column, SymbolToVerify, Exists, BoardSize) :-
     (Row >= 0), (Row < BoardSize), (Column >= 0), (Column < BoardSize),
     nth0(Row, Board, X),
     nth0(Column, X, Elem), 
     nth0(Column, X, SymbolToVerify), 
     Exists is 1, !.
 
-valid_movePC(Board, Row, Column, SymbolToVerify, Exists, BoardSize) :-
+valid_move(Board, Row, Column, SymbolToVerify, Exists, BoardSize) :-
     Exists is 0, nl.
-
-
-
-
 
 
 askToSwitch(Answer) :-
@@ -80,3 +72,35 @@ askToSwitch(Answer) :-
         write('Do you want to switch symbols with the other player? (y/n)'),
         read(Answer),
         (Answer = 'y'; Answer = 'n'), nl, !.
+
+
+ask_symbol :-
+    repeat,
+        write('Choose your symbol (X or O): '),
+        read(Symbol),
+        (Symbol = [88]; Symbol = [79]; Symbol = [120]; Symbol = [111]), nl, !.
+
+
+
+
+
+    
+choose_move(Column, Row, Board, BoardSize, SymbolToVerify, Moves, NewMoves) :-
+    write('Next move:'), nl,
+    write('Column: '),
+    read(Letter),
+    alphLetters(Letters),
+    nth0(Column, Letters, Letter),
+    write('Row: '),
+    read(ReadRow),
+    Row is ReadRow-1, 
+    \+ member((Row, Column), Moves), 
+    valid_move(Board, Row, Column, SymbolToVerify, Exists, BoardSize), 
+    (Exists = 1),
+    append(Moves, [(Row, Column)], NewMoves), 
+    concat_element(Moves, (Row, Column), NewMoves).
+
+
+choose_move(Column, Row, Board, BoardSize, SymbolToVerify, Moves, NewMoves) :-
+    write('Move not valid! '), nl,
+    choose_move(Column, Row, Board, BoardSize, SymbolToVerify, Moves, NewMoves). 

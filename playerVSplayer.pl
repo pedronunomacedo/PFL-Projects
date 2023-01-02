@@ -13,8 +13,8 @@ game_cycle1(BoardSize, Board, N, OptionMenu) :-
     askForOption(Option, Board, PlayerSymbol), 
     (Option = 1), 
 
-    
-    choose_move1(Column, Row, Board, BoardSize, '-'), nl,  nl, % stone of their color
+    Moves = [], 
+    choose_move(Column, Row, Board, BoardSize, '-', Moves, NewMoves1), nl,  nl, % stone of their color
 
     retract(board(Board)),
     move(BoardSize, BoardSize, Column, Row, Board, BoardNew, PlayerSymbol), % Put the stone with our colour
@@ -33,7 +33,7 @@ game_cycle1(BoardSize, Board, N, OptionMenu) :-
         display_game(BoardSize, BoardNew),
         nl
         ;
-        choose_move1(ColumnNeutral, RowNeutral, BoardNew, BoardSize, 'n'), nl, nl, % neutral stone
+        choose_move(ColumnNeutral, RowNeutral, BoardNew, BoardSize, '-', NewMoves1, NewMoves2), nl, nl, % neutral stone
         move(BoardSize, BoardSize, ColumnNeutral, RowNeutral, BoardNew, FinalBoard, 'n'), % Put the neutral stone
         assert(board(FinalBoard)),
 
@@ -96,8 +96,8 @@ game_cycle1(BoardSize, Board, N, OptionMenu) :-
     askForOption(Option, Board, PlayerSymbol), 
     (Option = 1), 
 
-     
-    choose_move1(Column, Row, Board, BoardSize, '-'), nl,  nl, % stone of their color
+    Moves = [], 
+    choose_move(Column, Row, Board, BoardSize, '-', Moves, NewMoves1), nl,  nl, % stone of their color
 
     retract(board(Board)),
     move(BoardSize, BoardSize, Column, Row, Board, BoardNew, PlayerSymbol), % Put the stone with our colour
@@ -117,7 +117,7 @@ game_cycle1(BoardSize, Board, N, OptionMenu) :-
         display_game(BoardSize, BoardNew),
         nl
         ;
-        choose_move1(ColumnNeutral, RowNeutral, BoardNew, BoardSize, '-'), nl, nl, % neutral stone
+        choose_move(ColumnNeutral, RowNeutral, BoardNew, BoardSize, '-', NewMoves1, NewMoves2), nl, nl, % neutral stone
         move(BoardSize, BoardSize, ColumnNeutral, RowNeutral, BoardNew, FinalBoard, 'n'), % Put the neutral stone
         assert(board(FinalBoard)),
 
@@ -153,7 +153,7 @@ game_cycle1(BoardSize, Board, N, OptionMenu) :-
     (Option = 2), 
 
     Moves = [],
-    choose_move2(Column, Row, Board, BoardSize, 'n', Moves, NewMoves1),
+    choose_move(Column, Row, Board, BoardSize, 'n', Moves, NewMoves1),
 
     retract(board(Board)),
     move(BoardSize, BoardSize, Column, Row, Board, BoardNew, PlayerSymbol), % 1st neutral stone -> 1st player stone
@@ -163,7 +163,7 @@ game_cycle1(BoardSize, Board, N, OptionMenu) :-
 
     
 
-    choose_move2(Column2, Row2, BoardNew, BoardSize, 'n', NewMoves1, NewMoves2),
+    choose_move(Column2, Row2, BoardNew, BoardSize, 'n', NewMoves1, NewMoves2),
 
     retract(board(BoardNew)),
     move(BoardSize, BoardSize, Column2, Row2, BoardNew, IntBoardNew, PlayerSymbol), % 2nd neutral stone -> 2nd player stone
@@ -172,7 +172,7 @@ game_cycle1(BoardSize, Board, N, OptionMenu) :-
     display_game(BoardSize, IntBoardNew), nl, % intermediate board
 
     
-    choose_move2(Column3, Row3, IntBoardNew, BoardSize, PlayerSymbol, NewMoves2, NewMoves3),
+    choose_move(Column3, Row3, IntBoardNew, BoardSize, PlayerSymbol, NewMoves2, NewMoves3),
     retract(board(IntBoardNew)),
     move(BoardSize, BoardSize, Column3, Row3, IntBoardNew, FinalBoard, 'n'), % player stone -> neutral stone
     assert(board(FinalBoard)),
