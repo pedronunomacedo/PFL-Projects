@@ -10,19 +10,19 @@
 :- use_module(library(lists)).
 :- use_module(library(random)).
 
+% board : stores the current board state
+% player : stores the user that it's playing in that moment
+% visited : stores the cells already visited when executing the DFS
 :- dynamic board/1, player/1, visited/1.
 
-% alphLetters(['A','B','C','D','E','F','G','H',
-%             'I','J','K','L','M','N','O','P',
-%             'Q','R','S','T','U','V','W','X',
-%             'Y','Z']).
-
+% Columns numbering
 alphLetters(['a','b','c','d','e','f','g','h',
             'i','j','k','l','m','n','o','p',
             'q','r','s','t','u','v','w','x',
             'y','z']).
 
 
+% Start the game by entering the predicate 'play' on the SICStus terminal
 play :-
     abolish(player/1),
     initialMenuDisplay,
@@ -57,7 +57,10 @@ play :-
 
 
 
-
+% Build the initial board depending on the inputed size
+% BoardSize : user input that refers to the board size (width and height)
+% Board : variable where to store the board of the game
+% initial_state(+BoardSize, -Board)
 initial_state(BoardSize, Board) :-
     boardSize(BoardSize),
     cls,
@@ -66,30 +69,19 @@ initial_state(BoardSize, Board) :-
     assert(board(Board)),
     assert(player(1)).
 
-
-display_game(BoardSize, Board) :-
-    printAllBoard(BoardSize, Board), nl.
-
-
-
+% Congratulates the winner that corresponds to the current Player, and exit the game.
 congrats :- 
     player(Player),
     getPlayerSymbol(Player, PlayerSymbol),
     write('-------------------------------'), nl,
-    write('|   P L A Y E R   '), write(PlayerSymbol), write('   W O N   |'), nl,
+    write('|   P L A Y E R '), write(PlayerSymbol), write('   W O N   |'), nl,
     write('-------------------------------'), nl, nl, nl, nl, nl, nl,
     halt.
   
 
-
+% If the game results in a tie.
 draw :-
     write('-------------------------------'), nl,
     write('|           D R A W           |'), nl,
     write('-------------------------------'), nl, nl, nl, nl, nl, nl,
     halt.
-
-
-% game_cycle(GameState) :-
-%     game_over(GameState, Winner), !,
-%     congralute(Winner).
-

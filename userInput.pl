@@ -60,31 +60,15 @@ askForOption(Option, Board, PlayerSymbol) :-
     ).
 
 
-
-
-verifyInput1(Board, Row, Column, SymbolToVerify, Exists, BoardSize) :-
-    (Row >= 0), (Row < BoardSize), (Column >= 0), (Column < BoardSize), 
-    nth0(Row, Board, X),
-    nth0(Column, X, '-'), 
-    Exists is 1, nl.
-
-verifyInput1(Board, Row, Column, SymbolToVerify, Exists, BoardSize) :-
-    Exists is 0, nl.
-
-
-
-verifyInput2(Board, Row, Column, SymbolToVerify, Exists, BoardSize) :-
+valid_movePC(Board, Row, Column, SymbolToVerify, Exists, BoardSize) :-
     (Row >= 0), (Row < BoardSize), (Column >= 0), (Column < BoardSize),
     nth0(Row, Board, X),
     nth0(Column, X, Elem), 
     nth0(Column, X, SymbolToVerify), 
     Exists is 1, !.
 
-verifyInput2(Board, Row, Column, SymbolToVerify, Exists, BoardSize) :-
+valid_movePC(Board, Row, Column, SymbolToVerify, Exists, BoardSize) :-
     Exists is 0, nl.
-
-
-
 
 
 
@@ -96,17 +80,3 @@ askToSwitch(Answer) :-
         write('Do you want to switch symbols with the other player? (y/n)'),
         read(Answer),
         (Answer = 'y'; Answer = 'n'), nl, !.
-
-
-
-
-
-% count_2d(PlayerSymbol, Board, CountPlayer), 
-% count_2d('n', Board, CountNeutrals),
-
-% Option = _, 
-% ((CountPlayer >= 1 ; CountNeutrals >= 2) ->
-%     askForOption(Option)
-%     ;
-%     askForOption1(Option)
-% ),

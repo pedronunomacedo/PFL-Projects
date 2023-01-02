@@ -1,5 +1,3 @@
-
-
 % If player chooses option 1 (Place a stone of their color 
 %                         AND a neutral stone on empty cells)
 game_cycle1(BoardSize, Board, N, OptionMenu) :-
@@ -15,15 +13,16 @@ game_cycle1(BoardSize, Board, N, OptionMenu) :-
     askForOption(Option, Board, PlayerSymbol), 
     (Option = 1), 
 
-    takeInput1(Column, Row, Board, BoardSize, PlayerSymbol), nl,  nl, % stone of their color
+    
+    choose_move1(Column, Row, Board, BoardSize, '-'), nl,  nl, % stone of their color
 
     retract(board(Board)),
-    createBoardNew(BoardSize, BoardSize, Column, Row, Board, BoardNew, PlayerSymbol), % Put the stone with our colour
+    move(BoardSize, BoardSize, Column, Row, Board, BoardNew, PlayerSymbol), % Put the stone with our colour
     assert(board(BoardNew)),
 
     count_2d('-', BoardNew, Count),
     (Count == 0 ->
-        printAllBoard(BoardSize, BoardNew), nl, nl, nl, nl,
+        display_game(BoardSize, BoardNew), nl, nl, nl, nl,
         draw, !
         ;
         nl    
@@ -31,16 +30,16 @@ game_cycle1(BoardSize, Board, N, OptionMenu) :-
     
     game_over(BoardNew, PlayerSymbol, BoardSize, GameOver), 
     (GameOver == 1 ->
-        printAllBoard(BoardSize, BoardNew),
+        display_game(BoardSize, BoardNew),
         nl
         ;
-        takeInput1(ColumnNeutral, RowNeutral, BoardNew, BoardSize, 'n'), nl, nl, % neutral stone
-        createBoardNew(BoardSize, BoardSize, ColumnNeutral, RowNeutral, BoardNew, FinalBoard, 'n'), % Put the neutral stone
+        choose_move1(ColumnNeutral, RowNeutral, BoardNew, BoardSize, 'n'), nl, nl, % neutral stone
+        move(BoardSize, BoardSize, ColumnNeutral, RowNeutral, BoardNew, FinalBoard, 'n'), % Put the neutral stone
         assert(board(FinalBoard)),
 
         count_2d('-', FinalBoard, Count1),
         (Count1 == 0 ->
-            printAllBoard(BoardSize, FinalBoard), nl, nl, nl, nl,
+            display_game(BoardSize, FinalBoard), nl, nl, nl, nl,
             draw, !
             ;
             nl    
@@ -55,7 +54,7 @@ game_cycle1(BoardSize, Board, N, OptionMenu) :-
         NewPlayer is (mod(Player, 2) + 1),
         assert(player(NewPlayer)),
 
-        printAllBoard(BoardSize, FinalBoard), nl,
+        display_game(BoardSize, FinalBoard), nl,
 
         Next is N+1,
         game_cycle1(BoardSize, FinalBoard, Next, OptionMenu)
@@ -96,36 +95,35 @@ game_cycle1(BoardSize, Board, N, OptionMenu) :-
 
     askForOption(Option, Board, PlayerSymbol), 
     (Option = 1), 
-    
-    takeInput1(Column, Row, Board, BoardSize, PlayerSymbol), nl,  nl, % stone of their color
+
+     
+    choose_move1(Column, Row, Board, BoardSize, '-'), nl,  nl, % stone of their color
 
     retract(board(Board)),
-    createBoardNew(BoardSize, BoardSize, Column, Row, Board, BoardNew, PlayerSymbol), % Put the stone with our colour
+    move(BoardSize, BoardSize, Column, Row, Board, BoardNew, PlayerSymbol), % Put the stone with our colour
     assert(board(BoardNew)),
 
     count_2d('-', BoardNew, Count),
     (Count == 0 ->
-        printAllBoard(BoardSize, BoardNew), nl, nl, nl, nl,
+        display_game(BoardSize, BoardNew), nl, nl, nl, nl,
         draw, !
         ;
         nl    
     ),
 
     
-
-    
     game_over(BoardNew, PlayerSymbol, BoardSize, GameOver), 
     (GameOver == 1 ->
-        printAllBoard(BoardSize, BoardNew),
+        display_game(BoardSize, BoardNew),
         nl
         ;
-        takeInput1(ColumnNeutral, RowNeutral, BoardNew, BoardSize, 'n'), nl, nl, % neutral stone
-        createBoardNew(BoardSize, BoardSize, ColumnNeutral, RowNeutral, BoardNew, FinalBoard, 'n'), % Put the neutral stone
+        choose_move1(ColumnNeutral, RowNeutral, BoardNew, BoardSize, '-'), nl, nl, % neutral stone
+        move(BoardSize, BoardSize, ColumnNeutral, RowNeutral, BoardNew, FinalBoard, 'n'), % Put the neutral stone
         assert(board(FinalBoard)),
 
         count_2d('-', FinalBoard, Count1),
         (Count1 == 0 ->
-            printAllBoard(BoardSize, FinalBoard), nl, nl, nl, nl,
+            display_game(BoardSize, FinalBoard), nl, nl, nl, nl,
             draw, !
             ;
             nl    
@@ -138,7 +136,7 @@ game_cycle1(BoardSize, Board, N, OptionMenu) :-
         NewPlayer is (mod(Player, 2) + 1),
         assert(player(NewPlayer)), 
 
-        printAllBoard(BoardSize, FinalBoard), nl, 
+        display_game(BoardSize, FinalBoard), nl, 
         
         Next is N+1,
 
@@ -155,33 +153,33 @@ game_cycle1(BoardSize, Board, N, OptionMenu) :-
     (Option = 2), 
 
     Moves = [],
-    takeInput2(Column, Row, Board, BoardSize, 'n', Moves, NewMoves1),
+    choose_move2(Column, Row, Board, BoardSize, 'n', Moves, NewMoves1),
 
     retract(board(Board)),
-    createBoardNew(BoardSize, BoardSize, Column, Row, Board, BoardNew, PlayerSymbol), % 1st neutral stone -> 1st player stone
+    move(BoardSize, BoardSize, Column, Row, Board, BoardNew, PlayerSymbol), % 1st neutral stone -> 1st player stone
     assert(board(BoardNew)), nl, 
     
-    printAllBoard(BoardSize, BoardNew), nl, % intermediate board
+    display_game(BoardSize, BoardNew), nl, % intermediate board
 
     
 
-    takeInput2(Column2, Row2, BoardNew, BoardSize, 'n', NewMoves1, NewMoves2),
+    choose_move2(Column2, Row2, BoardNew, BoardSize, 'n', NewMoves1, NewMoves2),
 
     retract(board(BoardNew)),
-    createBoardNew(BoardSize, BoardSize, Column2, Row2, BoardNew, IntBoardNew, PlayerSymbol), % 2nd neutral stone -> 2nd player stone
+    move(BoardSize, BoardSize, Column2, Row2, BoardNew, IntBoardNew, PlayerSymbol), % 2nd neutral stone -> 2nd player stone
     assert(board(IntBoardNew)),
 
-    printAllBoard(BoardSize, IntBoardNew), nl, % intermediate board
+    display_game(BoardSize, IntBoardNew), nl, % intermediate board
 
     
-    takeInput2(Column3, Row3, IntBoardNew, BoardSize, PlayerSymbol, NewMoves2, NewMoves3),
+    choose_move2(Column3, Row3, IntBoardNew, BoardSize, PlayerSymbol, NewMoves2, NewMoves3),
     retract(board(IntBoardNew)),
-    createBoardNew(BoardSize, BoardSize, Column3, Row3, IntBoardNew, FinalBoard, 'n'), % player stone -> neutral stone
+    move(BoardSize, BoardSize, Column3, Row3, IntBoardNew, FinalBoard, 'n'), % player stone -> neutral stone
     assert(board(FinalBoard)),
     cls, 
     initialMenuDisplay,
 
-    printAllBoard(BoardSize, FinalBoard), nl, % final board    
+    display_game(BoardSize, FinalBoard), nl, % final board    
 
     game_over(FinalBoard, PlayerSymbol, BoardSize, GameOver),
 

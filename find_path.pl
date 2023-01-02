@@ -1,5 +1,6 @@
 :- use_module(library(lists)).
 
+
 getElementOnBoard_Row(CurrentY, Y, [LineElem | LineRest], Elem) :-
     ((CurrentY == Y) -> 
         Elem = LineElem

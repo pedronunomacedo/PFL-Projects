@@ -13,12 +13,12 @@ game_cycle4(BoardSize, Board, N, OptionMenu, OptionDifficulty) :-
     optionTwoBotPlay(Column, Row, Board, BoardSize, PlayerSymbol), nl, nl,    
     
     retract(board(Board)),
-    createBoardNew(BoardSize, BoardSize, Column, Row, Board, BoardNew, PlayerSymbol), % Put the stone with our colour
+    move(BoardSize, BoardSize, Column, Row, Board, BoardNew, PlayerSymbol), % Put the stone with our colour
     assert(board(BoardNew)),
 
     count_2d('-', BoardNew, Count),
     (Count == 0 ->
-        printAllBoard(BoardSize, BoardNew), nl, nl, nl, nl,
+        display_game(BoardSize, BoardNew), nl, nl, nl, nl,
         draw, !
         ;
         nl    
@@ -28,18 +28,18 @@ game_cycle4(BoardSize, Board, N, OptionMenu, OptionDifficulty) :-
     game_over(BoardNew, PlayerSymbol, BoardSize, GameOver), 
 
     (GameOver == 1 ->
-        printAllBoard(BoardSize, BoardNew),
+        display_game(BoardSize, BoardNew),
         nl
         ;
  
         optionTwoBotPlay(ColumnNeutral, RowNeutral, BoardNew, BoardSize, 'n'), nl, nl,
         
-        createBoardNew(BoardSize, BoardSize, ColumnNeutral, RowNeutral, BoardNew, FinalBoard, 'n'), % Put the neutral stone
+        move(BoardSize, BoardSize, ColumnNeutral, RowNeutral, BoardNew, FinalBoard, 'n'), % Put the neutral stone
         assert(board(FinalBoard)),
 
         count_2d('-', FinalBoard, Count1),
         (Count1 == 0 ->
-            printAllBoard(BoardSize, FinalBoard), nl, nl, nl, nl,
+            display_game(BoardSize, FinalBoard), nl, nl, nl, nl,
             draw, !
             ;
             nl    
@@ -66,7 +66,7 @@ game_cycle4(BoardSize, Board, N, OptionMenu, OptionDifficulty) :-
         NewPlayer is (mod(Player, 2) + 1),
         assert(player(NewPlayer)), 
 
-        printAllBoard(BoardSize, FinalBoard), nl, 
+        display_game(BoardSize, FinalBoard), nl, 
         
         Next is N+1,
 

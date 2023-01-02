@@ -39,7 +39,7 @@ ask_symbol :-
 
 
 
-takeInput1(Column, Row, Board, BoardSize, SymbolToVerify) :-
+choose_move1(Column, Row, Board, BoardSize, SymbolToVerify) :-
     write('Next move:'), nl,
     write('Column: '),
     read(Letter),
@@ -48,12 +48,12 @@ takeInput1(Column, Row, Board, BoardSize, SymbolToVerify) :-
     nl, write('Row: '),
     read(ReadRow),
     Row is ReadRow-1, 
-    verifyInput1(Board, Row, Column, SymbolToVerify, Exists, BoardSize), 
+    valid_move(Board, Row, Column, '-', Exists, BoardSize), 
     (Exists = 1), nl.
 
-takeInput1(Column, Row, Board, BoardSize, SymbolToVerify) :-
+choose_move1(Column, Row, Board, BoardSize, SymbolToVerify) :-
     write('Move not valid! '), nl,
-    takeInput1(Column, Row, Board, BoardSize, SymbolToVerify). 
+    choose_move1(Column, Row, Board, BoardSize, SymbolToVerify). 
 
 
 
@@ -62,7 +62,7 @@ concat_element(List, Element, NewList) :-
 
 
     
-takeInput2(Column, Row, Board, BoardSize, SymbolToVerify, Moves, NewMoves) :-
+choose_move2(Column, Row, Board, BoardSize, SymbolToVerify, Moves, NewMoves) :-
     write('Next move:'), nl,
     write('Column: '),
     read(Letter),
@@ -72,15 +72,15 @@ takeInput2(Column, Row, Board, BoardSize, SymbolToVerify, Moves, NewMoves) :-
     read(ReadRow),
     Row is ReadRow-1, 
     \+ member((Row, Column), Moves), 
-    verifyInput2(Board, Row, Column, SymbolToVerify, Exists, BoardSize), 
+    valid_move(Board, Row, Column, SymbolToVerify, Exists, BoardSize), 
     (Exists = 1),
     append(Moves, [(Row, Column)], NewMoves), 
     concat_element(Moves, (Row, Column), NewMoves).
 
 
-takeInput2(Column, Row, Board, BoardSize, SymbolToVerify, Moves, NewMoves) :-
+choose_move2(Column, Row, Board, BoardSize, SymbolToVerify, Moves, NewMoves) :-
     write('Move not valid! '), nl,
-    takeInput2(Column, Row, Board, BoardSize, SymbolToVerify, Moves, NewMoves). 
+    choose_move2(Column, Row, Board, BoardSize, SymbolToVerify, Moves, NewMoves). 
 
 
 
@@ -106,7 +106,7 @@ optionTwoBotPlay(Column, Row, Board, BoardSize, SymbolToVerify) :-
         Column is NewColumn,
         random(0, BoardSize, NewRow),
         Row is NewRow,
-        verifyInput1(Board, Row, Column, SymbolToVerify, Exists, BoardSize),
+        valid_move(Board, Row, Column, '-', Exists, BoardSize),
         (Exists = 1), nl, !.
 
 
