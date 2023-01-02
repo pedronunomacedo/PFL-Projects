@@ -75,11 +75,10 @@ askForOption(Option, Board, PlayerSymbol) :-
 valid_move(Board, Row, Column, SymbolToVerify, Exists, BoardSize) :-
     (Row >= 0), (Row < BoardSize), (Column >= 0), (Column < BoardSize),
     nth0(Row, Board, X),
-    nth0(Column, X, Elem), 
     nth0(Column, X, SymbolToVerify), 
     Exists is 1, !.
 
-valid_move(Board, Row, Column, SymbolToVerify, Exists, BoardSize) :-
+valid_move(_, _, _, _, Exists, _) :-
     Exists is 0, nl.
 
 

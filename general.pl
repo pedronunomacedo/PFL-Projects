@@ -54,6 +54,7 @@ display_rules :-
 
 
 
+
 % Predicate to clear the terminal screen
 cls:-
     write('\33\[2J').
@@ -122,10 +123,3 @@ optionBotPlay(Column, Row, Board, BoardSize) :-
         Row is NewRow,
         valid_move(Board, Row, Column, '-', Exists, BoardSize),
         (Exists = 1), nl, !.
-
-
-
-
-
-
-

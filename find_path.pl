@@ -69,7 +69,7 @@ find_path(Board, X, Y, TargetX, TargetY, Visited, BoardSize, PlayerSymbol) :-
                     % Search for a path in the right direction
                     find_path(Board, X4, Y4, TargetX, TargetY, NewVisited, BoardSize, PlayerSymbol) ;
                     % Search for a path in the left-down direction
-                    find_path(Board, X5, X5, TargetX, TargetY, NewVisited, BoardSize, PlayerSymbol) ;
+                    find_path(Board, X5, Y5, TargetX, TargetY, NewVisited, BoardSize, PlayerSymbol) ;
                     % Search for a path in the right-up direction
                     find_path(Board, X6, Y6, TargetX, TargetY, NewVisited, BoardSize, PlayerSymbol)
                 )
@@ -93,7 +93,7 @@ find_path(Board, X, Y, TargetX, TargetY, Visited, BoardSize, PlayerSymbol) :-
 % Board : 2d list with the current board
 % BoardSize : Size of the board
 % check_elem_winX(+ElemX, +TargetX, +[Line | BoardRest], +Board, +BoardSize)
-check_elem_winX(ElemX, TargetX, [Line | BoardRest], Board, BoardSize) :-
+check_elem_winX(ElemX, TargetX, [_ | BoardRest], Board, BoardSize) :-
     TargetY is BoardSize-1, 
     (TargetX < BoardSize), 
 
@@ -113,7 +113,7 @@ check_elem_winX(_, _, _, _, _) :- false.
 % Board : 2d list with the current board
 % BoardSize : Size of the board
 % check_elem_winX(+ElemX, +TargetX, +[Line | BoardRest], +Board, +BoardSize)
-check_elem_winO(ElemY, TargetY, [Line | BoardRest], Board, BoardSize) :-
+check_elem_winO(ElemY, TargetY, [_ | BoardRest], Board, BoardSize) :-
     TargetX is BoardSize-1, 
     (TargetY < BoardSize), 
     
@@ -137,7 +137,7 @@ check_elem_winO(_, _, _, _, _) :- false.
 % BoardSize : Size of the board
 % Gameover : Variable to store 1 if the player won, otherwise 0
 % game_overX(+CurrentX, +[Line | BoardRest], +Board, +BoardSize, -GameOver)
-game_overX(CurrentX, [Line | BoardRest], Board, BoardSize, GameOver) :-
+game_overX(CurrentX, [_ | BoardRest], Board, BoardSize, GameOver) :-
     (CurrentX < BoardSize), 
     ((verifyElemPlayerSymbol(CurrentX, 0, Board, 'x'), check_elem_winX(CurrentX, 0, Board, Board, BoardSize)) ->
         GameOver is 1
@@ -145,8 +145,7 @@ game_overX(CurrentX, [Line | BoardRest], Board, BoardSize, GameOver) :-
         NextCurrentX is CurrentX+1, 
         game_overX(NextCurrentX, BoardRest, Board, BoardSize, GameOver)
     ).
-game_overX(_, _, _, _, Gameover) :- 
-    GameOver is 0.
+game_overX(_, _, _, _, 0).
 
 
 % Check if the player 'o' has won.
@@ -156,7 +155,7 @@ game_overX(_, _, _, _, Gameover) :-
 % BoardSize : Size of the board
 % Gameover : Variable to store 1 if the player won, or 0 otherwise
 % game_overO(+CurrentX, +[Line | BoardRest], +Board, +BoardSize, -GameOver)
-game_overO(CurrentY, [Elem | LineRest], Board, BoardSize, GameOver) :-
+game_overO(CurrentY, [_ | LineRest], Board, BoardSize, GameOver) :-
     (CurrentY < BoardSize), 
     ((verifyElemPlayerSymbol(0, CurrentY, Board, 'o'), check_elem_winO(CurrentY, 0, Board, Board, BoardSize)) ->
         GameOver is 1
@@ -165,8 +164,7 @@ game_overO(CurrentY, [Elem | LineRest], Board, BoardSize, GameOver) :-
         game_overO(NextCurrentY, LineRest, Board, BoardSize, GameOver)
     ).
 
-game_overO(_, _, _, _, Gameover) :- 
-    GameOver is 0.
+game_overO(_, _, _, _, 0).
 
 
 % Implement the game_over predicate to call the game_overX and game_overO predicates depending on the current player

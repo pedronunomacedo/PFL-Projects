@@ -42,7 +42,7 @@ createInitialLine(N, ['-' | Rest]) :-
  
 
 
-% Transverse the board line received and put the Stone given as paramter in the Line given, on the Column specified
+% Transverse the board line received and place the Stone given as paramter in the Line given, on the Column specified
 % N : Variable to decrease (initial value = BoardSize)
 % BoardSize : board size
 % Column : new column position
@@ -55,7 +55,7 @@ createLineNew_Row(N, BoardSize, Column, [OldChar | OldRest], [OldChar | Rest], S
     Next is N-1, 
     createLineNew_Row(Next, BoardSize, Column, OldRest, Rest, Stone).
 
-createLineNew_Row(N, BoardSize, Column, [OldChar | OldRest], [Stone | Rest], Stone) :-
+createLineNew_Row(N, BoardSize, Column, [_ | OldRest], [Stone | Rest], Stone) :-
     Next is N - 1,
     createLineNew_Row(Next, BoardSize, Column, OldRest, Rest, Stone).
 

@@ -73,5 +73,4 @@ game_cycle4(BoardSize, Board, N, OptionMenu, OptionDifficulty) :-
         game_cycle4(BoardSize, FinalBoard, Next, OptionMenu, OptionDifficulty)
     ).
 
-game_cycle4(BoardSize, Board, N, OptionMenu, OptionDifficulty) :- 
-    false.
+game_cycle4(_, _, _, _, _) :- false.
