@@ -1,6 +1,11 @@
-% If player chooses option 1 (Place a stone of their color 
-%                         AND a neutral stone on empty cells)
-game_cycle1(BoardSize, Board, N, OptionMenu) :-
+% If player chooses option 1 (Player vs Player)
+% BoardSize : Size of the board
+% Board : 2d list containing the current board
+% N : Current play
+% OptionMenu : menu option chossen by the player
+% OptionDifficulty : Option difficulty choosen by the player (1 - Easy or 2 - Difficult)
+% game_cycle3(+BoardSize, +Board, +N, +OptionMenu, +OptionDifficulty)
+game_cycle1(BoardSize, Board, N, OptionMenu) :- % (Option = 1) : 1st playing method (Place a stone of their color AND a neutral stone on empty cells) and 2nd play
     (OptionMenu == 1),
     (N == 2),
     player(Player),
@@ -11,7 +16,7 @@ game_cycle1(BoardSize, Board, N, OptionMenu) :-
     (Answer = 'n'),
     
     askForOption(Option, Board, PlayerSymbol), 
-    (Option = 1), 
+    (Option = 1),
 
     Moves = [], 
     choose_move(Column, Row, Board, BoardSize, '-', Moves, NewMoves1), nl,  nl, % stone of their color
@@ -60,8 +65,7 @@ game_cycle1(BoardSize, Board, N, OptionMenu) :-
         game_cycle1(BoardSize, FinalBoard, Next, OptionMenu)
     ).
 
-
-game_cycle1(BoardSize, Board, N, OptionMenu) :-
+game_cycle1(BoardSize, Board, N, OptionMenu) :-  % (N == 2) : 2nd play
     (OptionMenu == 1),
     player(Player),
     getPlayerSymbol(Player, PlayerSymbol),
@@ -77,17 +81,7 @@ game_cycle1(BoardSize, Board, N, OptionMenu) :-
     Next is N+1,
     game_cycle1(BoardSize, Board, Next, OptionMenu).
 
-
-
-
-
-
-
-
-
-% If player chooses option 1 (Place a stone of their color 
-%                         AND a neutral stone on empty cells)
-game_cycle1(BoardSize, Board, N, OptionMenu) :-
+game_cycle1(BoardSize, Board, N, OptionMenu) :-  % (Option = 1) : 1st playing method (Place a stone of their color AND a neutral stone on empty cells)
     (OptionMenu == 1),
     player(Player),
     getPlayerSymbol(Player, PlayerSymbol),
@@ -143,10 +137,7 @@ game_cycle1(BoardSize, Board, N, OptionMenu) :-
         game_cycle1(BoardSize, FinalBoard, Next, OptionMenu)
     ).
 
-
-% If player choose option 2 (Replace two neutral stones with stones of their color, 
-%                         AND replace a different stone of their color on the board to neutral stone)
-game_cycle1(BoardSize, Board, N, OptionMenu) :- 
+game_cycle1(BoardSize, Board, N, OptionMenu) :- % (Option = 2) : 1st playing method (Place a stone of their color AND a neutral stone on empty cells)
     (OptionMenu == 1),
     player(Player),
     getPlayerSymbol(Player, PlayerSymbol),
@@ -191,9 +182,7 @@ game_cycle1(BoardSize, Board, N, OptionMenu) :-
         NewPlayer is (mod(Player, 2) + 1),
         assert(player(NewPlayer)),
         game_cycle1(BoardSize, FinalBoard, Next, OptionMenu)
-    ).
-        
-        
+    ). 
 
 game_cycle1(BoardSize, Board, N, OptionMenu) :- 
     false.

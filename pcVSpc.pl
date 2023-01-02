@@ -1,7 +1,12 @@
 
 
-% If player chooses option 1 (Place a stone of their color 
-%                         AND a neutral stone on empty cells)
+% If player chooses option 4 (PC vs PC)
+% BoardSize : Size of the board
+% Board : 2d list containing the current board
+% N : Current play
+% OptionMenu : menu option chossen by the player
+% OptionDifficulty : Option difficulty choosen by the player (1 - Easy or 2 - Difficult)
+% game_cycle4(+BoardSize, +Board, +N, +OptionMenu, +OptionDifficulty)
 game_cycle4(BoardSize, Board, N, OptionMenu, OptionDifficulty) :-
     (OptionDifficulty == 1),
     (OptionMenu == 4),
@@ -10,7 +15,7 @@ game_cycle4(BoardSize, Board, N, OptionMenu, OptionDifficulty) :-
     
 
 
-    optionTwoBotPlay(Column, Row, Board, BoardSize, PlayerSymbol), nl, nl,    
+    optionBotPlay(Column, Row, Board, BoardSize), nl, nl,    
     
     retract(board(Board)),
     move(BoardSize, BoardSize, Column, Row, Board, BoardNew, PlayerSymbol), % Put the stone with our colour
@@ -32,7 +37,7 @@ game_cycle4(BoardSize, Board, N, OptionMenu, OptionDifficulty) :-
         nl
         ;
  
-        optionTwoBotPlay(ColumnNeutral, RowNeutral, BoardNew, BoardSize, 'n'), nl, nl,
+        optionBotPlay(ColumnNeutral, RowNeutral, BoardNew, BoardSize), nl, nl,
         
         move(BoardSize, BoardSize, ColumnNeutral, RowNeutral, BoardNew, FinalBoard, 'n'), % Put the neutral stone
         assert(board(FinalBoard)),
@@ -67,9 +72,6 @@ game_cycle4(BoardSize, Board, N, OptionMenu, OptionDifficulty) :-
 
         game_cycle4(BoardSize, FinalBoard, Next, OptionMenu, OptionDifficulty)
     ).
-
-
-
 
 game_cycle4(BoardSize, Board, N, OptionMenu, OptionDifficulty) :- 
     false.

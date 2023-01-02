@@ -9,29 +9,37 @@ boardSize(BoardSize) :-
       (BoardSize < 27), nl, !.
   
 
+% Creates the initial board depending on the user input
+% N : Number to be decremeneted until it reaches 0 (initially it's equal to Boardsize)
+% BoardSize : Size of the board inputed by the user
+% [Line | Rest] : List to store the board
+% createInitialBoard(+N, +BoardSize, -[Line | Rest])
+createInitialBoard(0, _,_).
+createInitialBoard(N, BoardSize, [Line | Rest]) :-
+    createInitialLine(BoardSize, Line),
+    Next is N-1,
+    createInitialBoard(Next, BoardSize, Rest). 
 
+% createLine(+N, +[OldChar | OldRest], -[OldChar | Rest])
 createLine(0, _, []).
 createLine(N, [OldChar | OldRest], [OldChar | Rest]) :-
     Next is N-1,
     createLine(Next, OldRest, Rest).
 
+% createBoard(+N, +BoardSize, -[Line | Rest])
 createBoard(0, _,_).
 createBoard(N, BoardSize, [Line|Rest]) :-
     createLine(BoardSize, Line),
     Next is N-1,
     createBoard(Next, BoardSize, Rest).
 
-
+% createInitialLine(+N, -['-' | Rest])
 createInitialLine(0, []).
 createInitialLine(N, ['-' | Rest]) :-
     Next is N-1,
     createInitialLine(Next, Rest).
-  
-createInitialBoard(0, _,_).
-createInitialBoard(N, BoardSize, [Line | Rest]) :-
-    createInitialLine(BoardSize, Line),
-    Next is N-1,
-    createInitialBoard(Next, BoardSize, Rest).  
+
+ 
 
 
 % Transverse the board line received and put the Stone given as paramter in the Line given, on the Column specified
@@ -58,8 +66,9 @@ createLineNew_Row(N, BoardSize, Column, [OldChar | OldRest], [Stone | Rest], Sto
 % BoardSize = board size
 % Column = new column position
 % Row = new row position
+% [OldLine | OldRest] = old board
 % [Line | Rest] = new board to be created
-% Stone to be placed on the cell (Column, Row)
+% Stone : Symbol to be placed on the cell (Column, Row)
 % move(+N, +BoardSize, +Column, +Row, +[OldLine | OldRest], -[Line | Rest], +Stone)
 move(0, _, _, _, _, _, _).
 move(N, BoardSize, Column, Row, [OldLine | OldRest], [Line | Rest], Stone) :-
@@ -68,7 +77,6 @@ move(N, BoardSize, Column, Row, [OldLine | OldRest], [Line | Rest], Stone) :-
     Next is N-1,
     move(Next, BoardSize, Column, Row, OldRest, Rest, Stone).
 
-% Find the row that has index equal to Row
 move(N, BoardSize, Column, Row, [OldLine | OldRest], [Line | Rest], Stone) :-
     createLineNew_Row(BoardSize, BoardSize, Column, OldLine, Line, Stone), % create new line
     Next is N-1,
@@ -76,6 +84,7 @@ move(N, BoardSize, Column, Row, [OldLine | OldRest], [Line | Rest], Stone) :-
 
 
 % Prints a Line of the board
+% [Elem | Rest] : A line of the Board
 % printLine(+[Elem | Rest])
 printLine([]).
 printLine([Elem | Rest]) :-
@@ -87,7 +96,7 @@ printLine([Elem | Rest]) :-
 % Prints the letters refering to the columns of the board
 % N : variable to be decreased
 % BoardSize : size of the board
-% [Litter | Rest] : list with the letters of the alphabet
+% [Letter | Rest] : list with the letters of the alphabet
 % printLetters(+N, +BoardSize, +[Line | Rest])
 printLetters(0, _, _).
 printLetters(N, BoardSize, [Letter | Rest]) :-
@@ -97,7 +106,8 @@ printLetters(N, BoardSize, [Letter | Rest]) :-
     printLetters(Next, BoardSize, Rest).
 
 
-% Prints the spaces before each line, in order ot create the diagonal baord
+% Prints the spaces before each line, in order ot create the diagonal board
+% Space : Number of spaces
 % writeSpace(+Space)
 writeSpace(Space) :-
     Space > 8,
@@ -122,7 +132,10 @@ printBoardLines(N, BoardSize, [Line | Rest]) :-
     printBoardLines(Next, BoardSize, Rest).
 
 
-% Displar the current board
+% Display the current state of the board
+% BoardSize : Size of the board
+% Board : Varible where the current board is stored
+% display_game(+BoardSize, +Board)
 display_game(BoardSize, Board) :-
     alphLetters(Letters),
     printLetters(BoardSize, BoardSize, Letters), nl,

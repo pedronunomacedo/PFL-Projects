@@ -1,3 +1,6 @@
+% Display the initial menu and ask for a game mode option
+% OptionMenu : Variable to store the menu option choosen by the user
+% initialMenu(-OptionMenu)
 initialMenu(OptionMenu) :-
     repeat,
         write('-------------------------------'), nl,
@@ -14,7 +17,9 @@ initialMenu(OptionMenu) :-
 
 
 
-
+% Display the difficulty menu and ask the user for an option
+% OptionDifficulty : Variable to store the difficulty option choosen by the user
+% difficultyMenu(-OptionDifficulty)
 difficultyMenu(OptionDifficulty) :-
     repeat,
         write('-------------------------------'), nl,
@@ -29,7 +34,11 @@ difficultyMenu(OptionDifficulty) :-
 
 
 
-
+% Display the possible playing modes and ask the user to choose one of them
+% Option : Variable to store the option choosen by the user
+% Board : Current board state
+% Playersymbol : Symbol of the current player
+% askForOption(-Option, +Board, +PlayerSymbol)
 askForOption(Option, Board, PlayerSymbol) :-
     count_2d(PlayerSymbol, Board, CountPlayer), 
     count_2d('n', Board, CountNeutrals),
@@ -57,6 +66,12 @@ askForOption(Option, Board, PlayerSymbol) :-
     ).
 
 
+% Check if a move is valid
+% Board : Current board state
+% Row : Row coordinates
+% Column : Column coordinates
+% SymbolToVerify : Symbol to verify if exists in the cell (Row, Column)
+% Exists : Variable to store if the SymbolToVerify is in the cell (Row, Column) (1 if exists, 0 otherwise)
 valid_move(Board, Row, Column, SymbolToVerify, Exists, BoardSize) :-
     (Row >= 0), (Row < BoardSize), (Column >= 0), (Column < BoardSize),
     nth0(Row, Board, X),
@@ -68,6 +83,9 @@ valid_move(Board, Row, Column, SymbolToVerify, Exists, BoardSize) :-
     Exists is 0, nl.
 
 
+% Ask the 2nd player if he wants to switch player
+% Answer : Answer of the player
+% askToSwitch(-Answer)
 askToSwitch(Answer) :-
     repeat,
         write('Do you want to switch symbols with the other player? (y/n)'),
@@ -85,7 +103,15 @@ ask_symbol :-
 
 
 
-    
+% ask the player for a move and validate the move
+% Column : Column coordinate
+% Row : Row coordinate
+% Board : Current board state
+% BoardSize : Size of the Board
+% SymbolToVerify : Symbol to verify if exists in the cell (Row, Column)
+% Moves : Moves previously done by the player in that iteration
+% NewMoves : Moves after a valid move
+% choose_move(+Column, +Row, +Board, +BoardSize, +SymbolToVerify, +Moves, -NewMoves)
 choose_move(Column, Row, Board, BoardSize, SymbolToVerify, Moves, NewMoves) :-
     write('Next move:'), nl,
     write('Column: '),
@@ -100,7 +126,6 @@ choose_move(Column, Row, Board, BoardSize, SymbolToVerify, Moves, NewMoves) :-
     (Exists = 1),
     append(Moves, [(Row, Column)], NewMoves), 
     concat_element(Moves, (Row, Column), NewMoves).
-
 
 choose_move(Column, Row, Board, BoardSize, SymbolToVerify, Moves, NewMoves) :-
     write('Move not valid! '), nl,

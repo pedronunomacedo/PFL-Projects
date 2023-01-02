@@ -1,5 +1,10 @@
-:- use_module(library(lists)).
-
+% Verifies if in the cell (X,Y) exists the PlayerSymbol
+% X : row coordinate
+% Y : column coordinate
+% PlayerSymbol : Symbol of the current player
+verifyElemPlayerSymbol(X, Y, Board, PlayerSymbol) :-
+    getElementOnBoard(0, X, Y, Board, Elem), 
+    (Elem == PlayerSymbol).
 
 getElementOnBoard_Row(CurrentY, Y, [LineElem | LineRest], Elem) :-
     ((CurrentY == Y) -> 
@@ -17,14 +22,21 @@ getElementOnBoard(CurrentX, X, Y, [Line | BoardRest], Elem) :-
         getElementOnBoard(NextCurrentX, X, Y, BoardRest, Elem)
     ).
 
-verifyElemPlayerSymbol(X, Y, Board, PlayerSymbol) :-
-    getElementOnBoard(0, X, Y, Board, Elem), 
-    (Elem == PlayerSymbol).
 
 
 
 
-% Define the predicate to search for a path from the current position to the destination position
+
+% Define the predicate to search for a path from the current position to the destination position, using a DFS.
+% Board : Current board state
+% X : row of the origin cell
+% Y : column of the origin cell
+% TargetX : row of the destination cell
+% TargetY : column of the destination cell
+% Visited : list of visited cells (used in order to not visit the cell again)
+% BoardSize : Size of the board
+% PlayerSymbol : Symbol of the current player
+% find_path(+Board, +X, +Y, +TargetX, +TargetY, +Visited, +BoardSize, +PlayerSymbol)
 find_path(Board, X, Y, TargetX, TargetY, Visited, BoardSize, PlayerSymbol) :-
     X1 is X, Y1 is Y-1, 
     X2 is X, Y2 is Y+1, 
@@ -74,7 +86,13 @@ find_path(Board, X, Y, TargetX, TargetY, Visited, BoardSize, PlayerSymbol) :-
 
 
 
-
+% Check if player X won the game.
+% ElemX : Row of the player
+% ElemY : Column of the player
+% [Line | BoardRest] : 2d list to be traverse in order to end the predicate
+% Board : 2d list with the current board
+% BoardSize : Size of the board
+% check_elem_winX(+ElemX, +TargetX, +[Line | BoardRest], +Board, +BoardSize)
 check_elem_winX(ElemX, TargetX, [Line | BoardRest], Board, BoardSize) :-
     TargetY is BoardSize-1, 
     (TargetX < BoardSize), 
@@ -85,8 +103,16 @@ check_elem_winX(ElemX, TargetX, [Line | BoardRest], Board, BoardSize) :-
         NextTargetX is TargetX+1, 
         check_elem_winX(ElemX, NextTargetX, BoardRest, Board, BoardSize)
     ).
+
 check_elem_winX(_, _, _, _, _) :- false.
 
+% Check if player O won the game.
+% ElemX : Row of the player
+% ElemY : Column of the player
+% [Line | BoardRest] : 2d list to be traverse in order to end the predicate
+% Board : 2d list with the current board
+% BoardSize : Size of the board
+% check_elem_winX(+ElemX, +TargetX, +[Line | BoardRest], +Board, +BoardSize)
 check_elem_winO(ElemY, TargetY, [Line | BoardRest], Board, BoardSize) :-
     TargetX is BoardSize-1, 
     (TargetY < BoardSize), 
@@ -97,13 +123,20 @@ check_elem_winO(ElemY, TargetY, [Line | BoardRest], Board, BoardSize) :-
         NextTargetY is TargetY+1, 
         check_elem_winO(ElemY, NextTargetY, BoardRest, Board, BoardSize)
     ).
+
 check_elem_winO(_, _, _, _, _) :- false.
 
 
 
 
 
-% Check if the player 'x' has won!
+% Check if the player 'x' has won.
+% CurrentX : Number to be incremeted in order to end the predicate (initially, it's equal to 0)
+% [Line | BoardRest] : 2d list to be traverse in order to end the predicate
+% Board : 2d list with the current board
+% BoardSize : Size of the board
+% Gameover : Variable to store 1 if the player won, otherwise 0
+% game_overX(+CurrentX, +[Line | BoardRest], +Board, +BoardSize, -GameOver)
 game_overX(CurrentX, [Line | BoardRest], Board, BoardSize, GameOver) :-
     (CurrentX < BoardSize), 
     ((verifyElemPlayerSymbol(CurrentX, 0, Board, 'x'), check_elem_winX(CurrentX, 0, Board, Board, BoardSize)) ->
@@ -116,7 +149,13 @@ game_overX(_, _, _, _, Gameover) :-
     GameOver is 0.
 
 
-% Check if the player 'o' has won!
+% Check if the player 'o' has won.
+% CurrentX : Number to be incremeted in order to end the predicate (initially, it's equal to 0)
+% [Line | BoardRest] : 2d list to be traverse in order to end the predicate
+% Board : 2d list with the current board
+% BoardSize : Size of the board
+% Gameover : Variable to store 1 if the player won, or 0 otherwise
+% game_overO(+CurrentX, +[Line | BoardRest], +Board, +BoardSize, -GameOver)
 game_overO(CurrentY, [Elem | LineRest], Board, BoardSize, GameOver) :-
     (CurrentY < BoardSize), 
     ((verifyElemPlayerSymbol(0, CurrentY, Board, 'o'), check_elem_winO(CurrentY, 0, Board, Board, BoardSize)) ->
@@ -130,7 +169,11 @@ game_overO(_, _, _, _, Gameover) :-
     GameOver is 0.
 
 
-% Implement the game_over predicate
+% Implement the game_over predicate to call the game_overX and game_overO predicates depending on the current player
+% [Line | BoardRest] : 2d list with the current board
+% PlayerSymbol : Symbol of the current player
+% BoardSize : Size of the board
+% Gameover : Variable to store 1 if the player won, or 0 otherwise
 game_over([Line | BoardRest], PlayerSymbol, BoardSize, GameOver) :-
     (PlayerSymbol == 'x' ->
         game_overX(0, [Line | BoardRest], [Line | BoardRest], BoardSize, GameOver)

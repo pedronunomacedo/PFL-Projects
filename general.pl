@@ -1,3 +1,4 @@
+% display the game logo
 initialMenuDisplay :-
     cls,
     write('----------------------------------------'), nl,
@@ -12,6 +13,7 @@ initialMenuDisplay :-
     write('|  ----------------------------------  |'), nl,
     write('----------------------------------------'), nl, nl, nl, nl.
 
+% Display the rules of the game
 display_rules :-
     cls,
     write('The game begins with an empty board.'), nl,
@@ -35,12 +37,16 @@ display_rules :-
 
 
 
-
+% Predicate to clear the terminal screen
 cls:-
     write('\33\[2J').
 
-print_n(0, _C):- !.
-print_n(N, C):-
+% Predicate to print a specific number of times a character
+% N : Number of times to print character C
+% C : Character to be printed
+% print_n(+N, +C)
+print_n(0, _C) :- !.
+print_n(N, C) :-
     write(C),
     N1 is N-1,
     print_n(N1, C).
@@ -48,39 +54,50 @@ print_n(N, C):-
 
 
 
-
+% Concatenate an element to a list
+% List : Original list where to placed the new element
+% Element : The new element
+% Newlist : New list after the concatenation
 concat_element(List, Element, NewList) :-
     append(List, [Element], NewList).
     
 
 
-
+% Get the player symbol depending of the current player (0 - 'x' and 1 - 'o')
+% Player : Player number
+% PlayerSymbol : Variable to store the symbol of the current player
 getPlayerSymbol(Player, PlayerSymbol) :-
     (Player = 1),
-    PlayerSymbol = 'x'.   % '\x25d8\'
+    PlayerSymbol = 'x'.
 
 getPlayerSymbol(Player, PlayerSymbol) :-
     (Player = 2),
     PlayerSymbol = 'o'.
 
 
-% count(+Element, +List, -Count)
-% Counts the number of times Element appears in List.
-count(_, [], 0).
-count(X, [X|Tail], N) :- count(X, Tail, N1), N is N1 + 1.
-count(X, [Y|Tail], N) :- X \= Y, count(X, Tail, N).
 
-% count_2d(+Element, +List2D, -Count)
-% Counts the number of times Element appears in List2D, which is a list of lists.
+
+
+% Count the number of times X appears in a 2D list given.
+% X : Element to be counted
+% [L|Ls] : List to be traverse
+% N : Variable to store the number of times the character X appears in the list given
+% count(+X, +[X | Tail], -N)
 count_2d(_, [], 0).
 count_2d(X, [L|Ls], N) :- count(X, L, N1), count_2d(X, Ls, N2), N is N1 + N2.
 
+count(_, [], 0).
+count(X, [X | Tail], N) :- count(X, Tail, N1), N is N1 + 1.
+count(X, [Y | Tail], N) :- X \= Y, count(X, Tail, N).
 
 
 
-
-
-optionTwoBotPlay(Column, Row, Board, BoardSize, SymbolToVerify) :-
+% Choose the cell coordinates when it's computer's turn
+% Column : Random column coordinate
+% Row : Random row coordinate
+% BoardSize : Size of the board
+% optionBotPlay(-Column, -Row, +Board, +BoardSize)
+optionBotPlay(Column, Row, Board, BoardSize) :-
     repeat,
         random(0, BoardSize, NewColumn),
         Column is NewColumn,

@@ -23,6 +23,7 @@ alphLetters(['a','b','c','d','e','f','g','h',
 
 
 % Start the game by entering the predicate 'play' on the SICStus terminal
+% Choose a game option (between 1 and 4) or to see the rules
 play :-
     abolish(player/1),
     initialMenuDisplay,
@@ -84,7 +85,7 @@ congrats :-
     halt.
   
 
-% If the game results in a tie.
+% If the game results is a tie.
 draw :-
     write('-------------------------------'), nl,
     write('|           D R A W           |'), nl,

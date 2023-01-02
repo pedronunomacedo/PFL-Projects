@@ -1,7 +1,10 @@
-
-
-% If player chooses option 1 (Place a stone of their color 
-%                         AND a neutral stone on empty cells)
+% If player chooses option 2 (Player vs PC)
+% BoardSize : Size of the board
+% Board : 2d list containing the current board
+% N : Current play
+% OptionMenu : menu option chossen by the player
+% OptionDifficulty : Option difficulty choosen by the player (1 - Easy or 2 - Difficult)
+% game_cycle3(+BoardSize, +Board, +N, +OptionMenu, +OptionDifficulty)
 game_cycle2(BoardSize, Board, N, OptionMenu, OptionDifficulty) :-
     (OptionDifficulty == 1),
     (OptionMenu == 2),
@@ -70,9 +73,6 @@ game_cycle2(BoardSize, Board, N, OptionMenu, OptionDifficulty) :-
         game_cycle2(BoardSize, FinalBoard, Next, OptionMenu, OptionDifficulty)
     ).
 
-
-% If player choose option 2 (Replace two neutral stones with stones of their color, 
-%                         AND replace a different stone of their color on the board to neutral stone)
 game_cycle2(BoardSize, Board, N, OptionMenu, OptionDifficulty) :- 
     (OptionDifficulty == 1),
     (OptionMenu == 2),
@@ -116,9 +116,6 @@ game_cycle2(BoardSize, Board, N, OptionMenu, OptionDifficulty) :-
         game_cycle2(BoardSize, FinalBoard, Next, OptionMenu, OptionDifficulty)
     ).
 
-
-
 game_cycle2(BoardSize, Board, N, OptionMenu, OptionDifficulty) :- 
-    
     false.
         
