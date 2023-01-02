@@ -80,7 +80,7 @@ congrats :-
     player(Player),
     getPlayerSymbol(Player, PlayerSymbol),
     write('-------------------------------'), nl,
-    write('|   P L A Y E R   '), write(PlayerSymbol), write(' W O N   |'), nl,
+    write('|   P L A Y E R   '), write(PlayerSymbol), write('   W O N   |'), nl,
     write('-------------------------------'), nl, nl, nl, nl, nl, nl,
     halt.
   

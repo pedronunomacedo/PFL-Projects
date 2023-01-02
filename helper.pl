@@ -19,7 +19,7 @@ change_element(CurrentI, CurrentJ, I, J, NewValue, [Row|Rest], [Row|NewRest]) :-
     NextCurrentI is CurrentI+1,
     change_element(NextCurrentI, CurrentJ, I, J, NewValue, Rest, NewRest).
 
-change_element(CurrentI, CurrentJ, I, J, NewValue, [Row|Rest], [NewRow|Rest]) :-
+change_element(_, _, _, J, NewValue, [Row|Rest], [NewRow|Rest]) :-
     change_element_row(0, J, NewValue, Row, NewRow).
 
 % change_element_row(+CurrentJ, +J, +NewValue, +[Elem | RestRow], -[Elem | RestNewRow])
@@ -29,7 +29,7 @@ change_element_row(CurrentJ, J, NewValue, [Elem | RestRow], [Elem | RestNewRow])
     NextCurrentJ is CurrentJ+1,
     change_element_row(NextCurrentJ, J, NewValue, RestRow, RestNewRow).
 
-change_element_row(CurrentJ, J, NewValue, [Elem | RestRow], [NewValue | RestNewRow]) :-
+change_element_row(CurrentJ, J, NewValue, [_ | RestRow], [NewValue | RestNewRow]) :-
     NextCurrentJ is CurrentJ+1, 
     change_element_row(NextCurrentJ, J, NewValue, RestRow, RestNewRow).
 
@@ -50,7 +50,7 @@ isVisited(X, Y, CheckValue, Visited, ElemVisited) :-
     (CheckValue = Elem), 
     ElemVisited is 1, nl.
 
-isVisited(X, Y, CheckValue, Visited, ElemVisited) :-
+isVisited(_, _, _, _, ElemVisited) :-
     ElemVisited is 0.
 
 
@@ -68,5 +68,5 @@ createVisitedList([Line | BoardRest], [LineVisited | VisitedRest]) :-
 
 % createVisitedList_Row(+[Elem | LineRest], -[0 | LineVisitedRest])
 createVisitedList_Row([], []).
-createVisitedList_Row([Elem | LineRest], [0 | LineVisitedRest]) :-
+createVisitedList_Row([_ | LineRest], [0 | LineVisitedRest]) :-
     createVisitedList_Row(LineRest, LineVisitedRest).

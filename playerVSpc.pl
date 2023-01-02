@@ -19,7 +19,7 @@ game_cycle2(BoardSize, Board, N, OptionMenu, OptionDifficulty) :-
         Moves = [], 
         choose_move(Column, Row, Board, BoardSize, '-', Moves, NewMoves1), nl,  nl % stone of their color
         ;
-        optionTwoBotPlay(Column, Row, Board, BoardSize, PlayerSymbol), nl, nl
+        optionBotPlay(Column, Row, Board, BoardSize), nl, nl
     ),
     
     
@@ -42,9 +42,9 @@ game_cycle2(BoardSize, Board, N, OptionMenu, OptionDifficulty) :-
         nl
         ;
         (PlayerSymbol == 'x' ->
-            choose_move(ColumnNeutral, RowNeutral, BoardNew, BoardSize, '-', NewMoves1, NewMoves2), nl, nl % neutral stone
+            choose_move(ColumnNeutral, RowNeutral, BoardNew, BoardSize, '-', NewMoves1, _), nl, nl % neutral stone
             ;
-            optionTwoBotPlay(ColumnNeutral, RowNeutral, BoardNew, BoardSize, 'n'), nl, nl
+            optionBotPlay(ColumnNeutral, RowNeutral, BoardNew, BoardSize), nl, nl
         ),
         
         move(BoardSize, BoardSize, ColumnNeutral, RowNeutral, BoardNew, FinalBoard, 'n'), % Put the neutral stone
@@ -78,7 +78,7 @@ game_cycle2(BoardSize, Board, N, OptionMenu, OptionDifficulty) :-
     (OptionMenu == 2),
     player(Player),
     getPlayerSymbol(Player, PlayerSymbol),
-    (Option = 2), 
+    % (Option = 2), 
 
     Moves = [],
     choose_move(Column, Row, Board, BoardSize, 'n', Moves, NewMoves1),
@@ -96,7 +96,7 @@ game_cycle2(BoardSize, Board, N, OptionMenu, OptionDifficulty) :-
     display_game(BoardSize, IntBoardNew), nl, % intermediate board
 
     
-    choose_move(Column3, Row3, IntBoardNew, BoardSize, PlayerSymbol, NewMoves2, NewMoves3),
+    choose_move(Column3, Row3, IntBoardNew, BoardSize, PlayerSymbol, NewMoves2, _),
     retract(board(IntBoardNew)),
     move(BoardSize, BoardSize, Column3, Row3, IntBoardNew, FinalBoard, 'n'), % player stone -> neutral stone
     assert(board(FinalBoard)),
@@ -116,6 +116,5 @@ game_cycle2(BoardSize, Board, N, OptionMenu, OptionDifficulty) :-
         game_cycle2(BoardSize, FinalBoard, Next, OptionMenu, OptionDifficulty)
     ).
 
-game_cycle2(BoardSize, Board, N, OptionMenu, OptionDifficulty) :- 
-    false.
+game_cycle2(_, _, _, _, _) :- false.
         
