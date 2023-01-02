@@ -16,23 +16,41 @@ initialMenuDisplay :-
 % Display the rules of the game
 display_rules :-
     cls,
-    write('The game begins with an empty board.'), nl,
 
-    write('Each player has an allocated color, usually Red and Blue.'), nl, 
+    write('-------------------------------'), nl,
+    write('|           R U L E S         |'), nl,
+    write('-------------------------------'), nl, nl, nl, nl,
 
-    write('Players take turns making one of the following: '), nl, 
 
-    write('Place a stone of their color AND a neutral stone on empty cells; '), nl, 
-    write('OR'), nl, 
-    write('Replace two neutral stones with stones of their color, AND replace a different stone of their color on the board to neutral stone.'), nl, 
 
-    write('Since the first player has a distinct advantage, the pie rule is generally used to make the game fair.  This rule allows the second player to switch colors as his first move.'), nl, nl, nl, nl, 
+    write('------------------------------------------------------------------------------------------------------'), nl,
+    write('|'), nl,
+    write('|   OBJECTIVE'), nl,
+    write('|'), nl,
+    write('|   The objective of Nex is to create a connected chain of a players stones linking the opposite edges of the board marked by the players color.'), nl,
+    write('|'), nl,
+    write('|'), nl,
+    write('|'), nl,
+    write('|   PLAY'), nl,
+    write('|'), nl,
+    write('|   The game begins with an empty board.'), nl,
+    write('|   Each player has an allocated piece symbol, X and O.'), nl,
+    write('|'), nl,
+    write('|   Players take turns making one of the following: '), nl, 
+    write('|      Place a stone of their color AND a neutral stone on empty cells; '), nl, 
+    write('|      OR'), nl, 
+    write('|      Replace two neutral stones with stones of their color, AND replace a different stone of their color on the board to neutral stone.'), nl,
+    write('|'), nl,
+    write('|   Since the first player has a distinct advantage, the pie rule is generally used to make the game fair.  This rule allows the second player to switch colors as his first move.'), nl, 
+    write('|'), nl,
+    write('------------------------------------------------------------------------------------------------------'), nl, nl, nl, nl,
 
     repeat,
         write('Press 0 to go back ...'), nl, nl, nl,
         read(Code2),
         (Code2 = 0), !,
     play.
+
 
 
 
