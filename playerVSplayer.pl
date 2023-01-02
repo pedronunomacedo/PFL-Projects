@@ -127,7 +127,7 @@ game_cycle1(BoardSize, Board, N, OptionMenu) :-
             draw, !
             ;
             nl    
-        ),write('herererere'), nl,
+        ),
         cls,
         initialMenuDisplay,
 

@@ -4,12 +4,13 @@ initialMenu(OptionMenu) :-
         write('|   M E N U   I N I C I A L   |'), nl,
         write('-------------------------------'), nl,
         write('  1. Player vs Player'), nl,
-        write('  2. Player vs PC'), nl,
-        write('  3. PC vs Player'), nl,
-        write('  4. PC vs PC'), nl, nl,
+        write('  2. Player vs PC'    ), nl,
+        write('  3. PC vs Player'    ), nl,
+        write('  4. PC vs PC'        ), nl,
+        write('  5. Rules           '), nl, nl,
         write('Option: '),
         read(OptionMenu),
-        (OptionMenu = 1; OptionMenu = 2; OptionMenu = 3; OptionMenu = 4), nl, !.
+        (OptionMenu = 1; OptionMenu = 2; OptionMenu = 3; OptionMenu = 4; OptionMenu = 5), nl, !.
 
 
 

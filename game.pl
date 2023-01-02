@@ -27,10 +27,15 @@ play :-
     abolish(player/1),
     initialMenuDisplay,
     initialMenu(OptionMenu),
-    (OptionMenu == 1 ->
+    ((OptionMenu == 1 ; OptionMenu == 5) ->
       nl
       ;
       difficultyMenu(OptionDifficulty)
+    ),
+    (OptionMenu == 5 ->
+        display_rules
+        ;
+        nl
     ),
     initial_state(BoardSize, Board),
     display_game(BoardSize, Board),
